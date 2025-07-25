@@ -1,3 +1,4 @@
+import sys
 import xml.etree.ElementTree as ET
 
 # Parse the XML file
@@ -37,11 +38,14 @@ def compare_elements(e1, e2, path="/"):
         child_path = f"{path}/{e1.tag}[{i}]"
         compare_elements(child1, child2, path=child_path)
 
-# Example usage:
-file1 = 'example1.xml'
-file2 = 'example2.xml'
 
-root1 = parse_xml(file1)
-root2 = parse_xml(file2)
 
-compare_elements(root1, root2)
+if __name__ == '__main__':
+    # Example usage:
+    file1 = sys.argv[1]
+    file2 = sys.argv[2]
+
+    root1 = parse_xml(file1)
+    root2 = parse_xml(file2)
+
+    compare_elements(root1, root2)
