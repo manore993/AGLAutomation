@@ -1,0 +1,6 @@
+<library>
+    <book id="1">
+        <title>1984</title>
+        <author>G. Orwell</author> <!-- Text differs -->
+    </book>
+</library>

@@ -1,0 +1,10 @@
+<library>
+    <book id="1">
+        <title>1984</title>
+        <author>George Orwell</author>
+    </book>
+    <book id="2">
+        <title>Brave New World</title>
+        <author>Aldous Huxley</author>
+    </book>
+</library>
