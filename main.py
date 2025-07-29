@@ -27,7 +27,7 @@ def compare_elements(e1, e2, path="/"):
 
     t1 = (e1.text or '').strip()
     t2 = (e2.text or '').strip()
-    
+
     different_value_is_allowed = e1.tag == "MessageUUID"
 
     if t1 != t2 and not different_value_is_allowed:
