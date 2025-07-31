@@ -56,6 +56,9 @@ def compare_children_equivalence(e1, e2, path="/"):
     sigs1 = [get_element_signature(child) for child in children1]
     sigs2 = [get_element_signature(child) for child in children2]
 
+    hash_to_elem1 = {sig["hash"]: elem for sig, elem in zip(sigs1, children1)}
+    hash_to_elem2 = {sig["hash"]: elem for sig, elem in zip(sigs2, children2)}
+
     #hashes1 and hashes2 are lists of hashes of child elements (created earlier with a hash function that recursively
     # captures the structure of each child).
     hashes1 = [sig["hash"] for sig in sigs1]
@@ -88,6 +91,10 @@ def compare_children_equivalence(e1, e2, path="/"):
         #   Extra duplicates in one file
         #   Todo:Patrice(11-12) Penda(T26-T29)
         if c1 != c2:
+            # Try to get element from file1, fallback to file2
+            element = hash_to_elem1.get(h) or hash_to_elem2.get(h)
+            xml_str = ET.tostring(element, encoding='unicode').strip()
+            print(f"Duplicate element at {current_path}: appears {c1} times in file1, {c2} times in file2:\n{xml_str}")
             print(f"Element count (Missing or extra child ) mismatch at {current_path}: hash={h[:8]} appears {c1} times in file1 vs {c2} in file2")
 
     # Check for same content but different order
