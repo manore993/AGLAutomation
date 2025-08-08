@@ -1,0 +1,513 @@
+﻿CAHIER DE RECETTE N MESSAGES;;;;;;;;
+;;;;;;;;
+N°;ID;BUT;EXEMPLES REFERENCES;EXEMPLES MESSAGES;COMMENTAIRES;;;
+VALEURES DIFFERENTES;;;;;;;In code;à refactoriser?
+TC1;1a – Valeur différente sur même nœud;Détecter qu’une valeur attendue a changé;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Order>
+  <ID>100</ID>
+</Order>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Order>
+  <ID>200</ID> 
+</Order>
+";Valeur modifiée sur le nœud ;Penda;;
+TC2;1b – Valeur différente numérique VS Chaine;Détecter  qu'une valeur différente de type numérique VS chaine a change;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Qty>10</Qty>
+</Document>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Qty>""10""</Qty> 
+</Document>
+";Type chaîne au lieu de numérique ;Penda;;
+TC3;1c – Valeur différente – profondeur multiple;Détecter  qu'une valeur différente à profondeur >2;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <A>
+    <B>
+      <C>foo</C>
+    </B>
+  </A>
+</Document>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <A>
+    <B>
+      <C>bar</C> 
+    </B>
+  </A>
+</Document>
+";Valeur modifiée à profondeur 3 ;Penda;;
+NOEUDS MANQUANTS;;;;;;;;
+TC4;2a – Nœud manquant – feuille;Détecter  qu'un  nœud est manquant – Absence de nœud feuille;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<User>
+  <Name>Jean Dupont</Name>
+  <Email>jean.dupont@example.com</Email>
+</User>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<User>
+  <Name>Jean Dupont</Name>
+</User>
+";  Email manquant ;Penda;Oui;Pas fini
+TC5;2b – Nœud manquant – branche entière;Détecter  qu'un  nœud est manquant – Arborescence manquante;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<User>
+  <Address>
+    <Street>1 rue A</Street>
+    <City>Paris</City>
+  </Address>
+</User>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<User>
+</User>
+";  Address manquant intégralement ;Penda;Oui;Pas fini
+NOEUDS SUPPLEMENTAIRES;;;;;;;;
+TC6;3a – Nœud supplémentaire – feuille;Présence inattendue de nœud feuille;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Order>
+  <TotalAmount>100</TotalAmount>
+</Order>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Order>
+  <TotalAmount>100</TotalAmount>
+  <Discount>10</Discount> 
+</Order>
+";Nœud feuille supplémentaire ;Penda;Oui;Pas fini
+TC7;3b – Nœud supplémentaire – sous-branche;Arborescence manquante;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Order>
+  <Items>
+    <Item>ID1</Item>
+  </Items>
+</Order>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Order>
+  <Items>
+    <Item>ID1</Item>
+    <ItemDetails>
+      <Detail>A</Detail>
+    </ItemDetails> 
+  </Items>
+</Order>
+";Noeud sous-branche supplémentaire;Penda;Oui;Pas fini
+ORDRE DE NOEUDS;;;;;;;;
+TC8;4a – Nœuds hors ordre / équivalence;Reconnaître l’équivalence malgré un ordre différent;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Parents>
+  <Parent Role=""Père"">
+    <Loisirs>
+      <Loisir>Football</Loisir>
+      <Loisir>Photographie</Loisir>
+    </Loisirs>
+  </Parent>
+</Parents>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Parents>
+  <Parent Role=""Père"">
+    <Loisirs>
+      <Loisir>Photographie</Loisir> 
+      <Loisir>Football</Loisir>
+    </Loisirs>
+  </Parent>
+</Parents>
+";Ordre inversé ;Penda;Oui;Pas fini
+TC9;4b –  Hors ordre – plusieurs nœuds;Détecter plusieurs nœuds hors ordre ;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Items>
+  <A/>
+  <B/>
+  <C/>
+</Items>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Items>
+  <C/> 
+  <A/>
+  <B/>
+</Items>
+";Réarrangement de l’ordre ;Penda;Oui;Pas fini
+TC10;4c – Hors ordre vs duplication;Déctecter la duplication de noeuds hors ordre ;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Tags>
+  <Tag>X</Tag>
+  <Tag>X</Tag>
+</Tags>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Tags>
+  <Tag>X</Tag>
+  <Tag>X</Tag> 
+</Tags>
+";Même contenu mais ordre probablement changé → suspicion ;Penda;Oui;Pas fini
+EXCLUSION SIMULTANNEE DE CHAMPS;;;;;;;;
+TC11;5a – Exclusion unique – timestamp;Ignorer la valeur du timestamp;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <TS>2025-07-17T10:00:00Z</TS>
+</Document>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <TS>2025-07-17T10:05:22Z</TS> 
+</Document>
+";Timestamp modifié mais ignoré;Penda;;
+TC12;5b – Exclusion multiple – timestamp & uuid;Ignorer plusieurs champs variables;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <TS>2025-07-17T14:30:00Z</TS>
+  <MessageUUID>550e8400-e29b-41d4-a716-446655440000</MessageUUID>
+  <Content>Some data</Content>
+</Document>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <TS>2025-07-17T15:45:22Z</TS>       
+  <MessageUUID>660e9511-f38c-52e7-b827-557766550111</MessageUUID> 
+  <Content>Some data</Content>
+</Document>
+";  Timestamp modifié         UUID modifié ;Penda;;
+UUID IMBRIQUES;;;;;;;;
+TC13;6a – UUID – 1ʳᵉ profondeur;Ignorer la valeur d'un  UUID au niveau de la 1ʳᵉ occurrence;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <UUID>abc</UUID>
+</Root>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <UUID>xyz</UUID> 
+</Root>
+";Valeur modifiée, mais doit être ignorée ;Penda;;
+TC14;6b – UUID Kᵉ occurrence;Ignorer la valeur d'un  UUID au niveau de la 2éme occurrence;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <UUID>ID1</UUID>
+  <UUID>ID2</UUID>
+</Root>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <UUID>ID1</UUID>
+  <UUID>NEWID2</UUID> 
+</Root>
+";Modification uniquement sur la 2ᵉ occurrence, doit être ignorée ;Penda;;
+TC15;6c – UUID à profondeur arbitraire;Exclure la valeur d’un <UUID> à un niveau imbriqué;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Parent>
+  <A>
+    <UUID>orig‑uuid</UUID>
+  </A>
+</Parent>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Parent>
+  <A>
+    <UUID>new‑uuid‑value</UUID> 
+  </A>
+</Parent>
+";Valeur différente à profondeur >1, ignorée ;Penda;;
+TC16;6d – Exclusion multiple de clés;Exlusion de la valeur <UUID> et <SessionID>;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Session>
+  <SessionID>S1</SessionID>
+  <UUID>ID1</UUID>
+  <Data>Payload</Data>
+</Session>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Session>
+  <SessionID>S2</SessionID> 
+  <UUID>NEW-ID</UUID>       
+  <Data>Payload</Data>
+</Session>
+"; SessionID modifié, mais exclu                                         UUID modifié, mais exclu ;Penda;;
+VERIFICATION DES PROFONDEURS;;;;;;;;
+TC17;7a -Profondeur 3 – valeur;Valeur profonde – profondeur 3;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <A>
+    <B>
+      <C>v1</C>
+    </B>
+  </A>
+</Document>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <A>
+    <B>
+      <C>v2</C> 
+    </B>
+  </A>
+</Document>
+";Valeur modifiée à profondeur 3 ;Penda;;
+TC18;7b - Profondeur N – valeur;Valeur profonde – profondeur variable;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <A>
+    <B>
+      <C>
+        <D>
+          <E>deep</E>
+        </D>
+      </C>
+    </B>
+  </A>
+</Document>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <A>
+    <B>
+      <C>
+        <D>
+          <E>changed</E>
+        </D>
+      </C>
+    </B>
+  </A>
+</Document>
+"; Valeur modifiée à profondeur >3;Penda;;
+VERIFICATION DES CLES;;;;;;;;
+TC19;8a- Clé enracine vs sous‑branche;Clé enracine vs sous-branche;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Key>R</Key>
+  <Parent>
+    <Key>S</Key>
+  </Parent>
+</Document>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Key>R</Key>
+  <Parent>
+    <Key>MODIF_S</Key> 
+  </Parent>
+</Document>
+";La seconde clé modifiée uniquement ;Penda;;
+TC20;8b- Clé enracine vs sous‑branche;Clé duplicata – trois occurrences;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Keys>
+    <Key>K1</Key>
+    <Key>K2</Key>
+    <Key>K3</Key>
+  </Keys>
+</Document>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Keys>
+    <Key>K1</Key>
+    <Key>K2</Key>
+    <Key>BAD_K3</Key> 
+  </Keys>
+</Document>
+";Seule la 3ᵉ occurrence modifiée ;Penda;;
+VALEURS & ORDRES;;;;;;;;
+TC21;9a- Existence + valeur unique;Existence + valeur unique;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Qty>5</Qty>
+</Document>
+";"
+
+SCENARIO 1 (<Qty> absent )
+<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Qty><Qty> 
+</Document>
+
+SCENARIO 2 (<Qty> valeur non conforme)
+<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Qty>0</Qty> 
+</Document>
+";"<Qty> absent 
+Valeur <1 → doit être signalée ";Penda;;
+TC22;9b- Existence + ordre;Existence + ordre;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Items>
+    <Item>A</Item>
+    <Item>B</Item>
+    <Item>C</Item>
+  </Items>
+</Document>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Items>
+    <Item>B</Item>
+    <Item>A</Item>
+    <Item>C</Item> 
+  </Items>
+</Document>
+";Ordre A/B/C non respecté ;Penda;;
+TC23;9c- Valeur + exclusion de champ;Valeur + exclusion de champ;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Order>
+    <Price>100</Price>
+    <Timestamp>2025-07-17T10:00:00Z</Timestamp>
+  </Order>
+</Document>
+";"<?xml version=""1.0"" encoding=""UTF‑8""?>
+<Document>
+  <Order>
+    <Price>90</Price>         
+    <Timestamp>2025-07-17T10:05:00Z</Timestamp> 
+  </Order>
+</Document>
+";"  Valeur incorrecte -->
+ À exclure ";Penda;;
+COMMENTAIRES VARIABLES;;;;;;;;
+TC24;10a – Exclusion de tag commentaire variable;Commentaire – début fixe;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Notes>VOITURE</Notes>
+</Document>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Notes>VOITURE [QA‑123]</Notes> 
+</Document>
+";Suffixe variable accepté ;Penda;;
+TC25;10b – Exclusion de tag commentaire variable;Commentaire – suffixe multiple;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Notes>VOITURE</Notes>
+</Document>
+";"Variante 1      
+
+     <?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Notes>VOITURE [QA TIR 20250717]</Notes>
+</Document>
+
+Variante 2
+
+
+<?xml version=""1.0"" encoding=""UTF-8""?>
+<Document>
+  <Notes>VOITURE [BATCH 123]</Notes>
+</Document>
+";Plusieurs variantes de suffixe acceptées;Penda;;
+IDENTIQUES HORS ORDRE;;;;;;;;
+TC26;11a- Éléments identiques hors ordre;Suspicion d’équivalence (éléments identiques hors ordre);"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Values>
+  <X>123</X>
+</Values>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Values>
+  <Y>123</Y> 
+</Values>
+";Contenu identique mais balise différente → suspicion d’équivalence ;Penda;Oui;Pas fini
+TC27;11b- Multiples x identiques hors ordre;Multiples identiques hors ordre (suspicions multiples);"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Tags>
+  <Tag>A</Tag>
+  <Tag>B</Tag>
+  <Tag>C</Tag>
+</Tags>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Tags>
+  <Tag>B</Tag>
+  <Tag>C</Tag>
+  <Tag>A</Tag>
+</Tags>
+";Echange multiple → suspicion générale sur l’ordre ;Penda;Oui;Pas fini
+BRANCHES;;;;;;;;
+TC28;"12a- Plusieurs branches simultanées
+";Branches multiples – ordre aléatoire;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <A/>
+  <B/>
+  <C/>
+  <D/>
+</Root>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <D/>
+  <B/>
+  <A/>
+  <C/>
+</Root> 
+
+";Ordre changé → considéré comme équivalent si ordre non significatif ;Penda;Oui;Pas fini
+TC29;12b- Branches imbriquées multiples;Branches imbriquées multiples avec ordre inversé;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <A>
+    <A1/>
+    <A2/>
+  </A>
+  <B>
+    <B1/>
+    <B2/>
+  </B>
+</Root>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <B>
+    <B2/>
+    <B1/>
+  </B>
+  <A>
+    <A2/>
+    <A1/>
+  </A>
+</Root> 
+";Ordre interne et externe inversés mais syntaxiquement équivalent;Penda;Oui;Pas fini
+PRESENCE ET ABSENCE DE NEOUDS;;;;;;;;
+TC30;13a- Existence + absence;Ajout du nœud manquant;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <Price>100</Price>
+</Root>
+
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <Price>100</Price>
+  <Discount>5</Discount>
+</Root>
+"; Ajout d’un nœud Discount manquant ;Penda;;
+TC31;13b- Valeur + existence;Valeur modifiée + suppression;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <Qty>2</Qty>
+  <Status>OK</Status>
+</Root>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <Qty>0</Qty>      
+</Root>
+";"  Valeur modifiée de 2 → 0 
+  Status absent 
+Suppression intentionnelle du nœud Status ";Penda;;
+TC32;13c- Valeur + Ajout;Valeur conservée + ajout conditionnel;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <Price>50</Price>
+</Root>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <Price>50</Price>
+  <Promo>10%</Promo> 
+</Root>
+";Ajout d’un nœud Promo manquant ;Penda;;
+TC33;13d- Exclusion + valeur + absence;Modification combinée + ajout;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <TS>…</TS>
+  <Amt>200</Amt>
+  <!-- pas de Fee -->
+</Root>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <TS>…modifié…</TS> 
+  <Amt>150</Amt>     
+  <Fee>20</Fee>      
+</Root>
+";"TS modifié 
+Montant réduit de 200 → 150 
+Ajout d’un nœud Fee manquant ";Penda;;
+LOT;;;;;;;;
+TC34;14a- Lot petit volume (N=5);Volume itératif (synthèse des résultats);"<?xml version=""1.0"" encoding=""UTF-8""?>
+<TestSummary>
+  Lot de 5 fichiers valides
+</TestSummary>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<TestSummary>
+  Lot de 5 tests : 4 passent, 1 échoue → synthèse « 4 ok, 1 échec » 
+</TestSummary>
+";Résumé des résultats de tests ;Penda;;
+FACULTATIF;;;;;;;;
+TC37;"15a- Facultatif – valeur conforme
+";Valeur conforme;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <Optional>YES</Optional> 
+</Root>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <Optional>YES</Optional> 
+</Root>
+";Facultatif et conforme, aucun changement détecté ;Penda;;
+TC38;"15b- Facultatif – absent
+
+";Valeur absente;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+</Root>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+</Root>
+"; Nœud Optional toujours absent — Cas inchangé ;Penda;;
+TC39;"15c- Facultatif + valeur erronée
+";Valeur eronnée;"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <Optional>YES</Optional>
+</Root>
+";"<?xml version=""1.0"" encoding=""UTF-8""?>
+<Root>
+  <Optional>BAD</Optional> 
+</Root>
+";Valeur modifiée de YES → BAD pour test d’erreur ;Penda;;

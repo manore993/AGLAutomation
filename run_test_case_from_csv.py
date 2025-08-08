@@ -1,5 +1,8 @@
 import csv
 
+from semantic_comparaison import compare_xml_files
+
+
 def read_relevant_test_cases(csv_file_path):
     test_cases = []
 
@@ -11,7 +14,7 @@ def read_relevant_test_cases(csv_file_path):
             if not row or not row[0].strip().startswith("TC"):
                 continue
 
-            print(row)
+            #print(row)
 
             # Extract the relevant fields
             test_case_id = row[0].strip()
@@ -33,4 +36,18 @@ def read_relevant_test_cases(csv_file_path):
 
 csv_file_path = "./tests/cahier_de_recette.csv"
 
-read_relevant_test_cases(csv_file_path)
+tests = read_relevant_test_cases(csv_file_path)
+
+for test in tests:
+    print(test["label"])
+    file1 = "reference.xml"
+    with open(file1, "w", encoding="utf-8") as file:
+        file.write(test["xml_reference"])
+    file2 = "generates.xml"
+    with open(file2, "w", encoding="utf-8") as file:
+        file.write(test["xml_generated"])
+
+    try:
+        compare_xml_files(file1, file2)
+    except:
+        print("Invalid test case")
