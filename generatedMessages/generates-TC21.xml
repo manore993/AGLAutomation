@@ -1,0 +1,11 @@
+SCENARIO 1 (<Qty> absent )
+<?xml version="1.0" encoding="UTF-8"?>
+<Document>
+  <Qty><Qty> 
+</Document>
+
+SCENARIO 2 (<Qty> valeur non conforme)
+<?xml version="1.0" encoding="UTF-8"?>
+<Document>
+  <Qty>0</Qty> 
+</Document>

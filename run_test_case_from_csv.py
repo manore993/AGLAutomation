@@ -42,10 +42,10 @@ for test in tests:
     print("---------------------------------")
     print("Running test case:")
     print(test["label"])
-    file1 = "reference.xml"
+    file1 = f"reference-{test["id"]}.xml"
     with open(file1, "w", encoding="utf-8") as file:
         file.write(test["xml_reference"])
-    file2 = "generates.xml"
+    file2 = f"generates-{test["id"]}.xml"
     with open(file2, "w", encoding="utf-8") as file:
         file.write(test["xml_generated"])
 

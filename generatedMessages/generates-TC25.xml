@@ -1,0 +1,14 @@
+Variante 1      
+
+     <?xml version="1.0" encoding="UTF-8"?>
+<Document>
+  <Notes>VOITURE [QA TIR 20250717]</Notes>
+</Document>
+
+Variante 2
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<Document>
+  <Notes>VOITURE [BATCH 123]</Notes>
+</Document>

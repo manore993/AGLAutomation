@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Parents>
+  <Parent Role="Père">
+    <Loisirs>
+      <Loisir>Football</Loisir>
+      <Loisir>Photographie</Loisir>
+    </Loisirs>
+  </Parent>
+</Parents>
