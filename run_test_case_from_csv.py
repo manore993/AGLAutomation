@@ -39,6 +39,8 @@ csv_file_path = "./tests/cahier_de_recette.csv"
 tests = read_relevant_test_cases(csv_file_path)
 
 for test in tests:
+    print("---------------------------------")
+    print("Running test case:")
     print(test["label"])
     file1 = "reference.xml"
     with open(file1, "w", encoding="utf-8") as file:
@@ -51,3 +53,4 @@ for test in tests:
         compare_xml_files(file1, file2)
     except:
         print("Invalid test case")
+    print("---------------------------------")
