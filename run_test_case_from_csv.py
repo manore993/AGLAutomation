@@ -1,4 +1,6 @@
 import csv
+import io
+from contextlib import redirect_stdout
 
 from semantic_comparaison import compare_xml_files
 
@@ -22,6 +24,7 @@ def read_relevant_test_cases(csv_file_path):
             description = row[2].strip()
             xml_ref = row[3].strip()
             xml_gen = row[4].strip()
+            expected_result = row[7].strip()
 
 
             test_cases.append({
@@ -30,6 +33,7 @@ def read_relevant_test_cases(csv_file_path):
                 "description": description,
                 "xml_reference": xml_ref,
                 "xml_generated": xml_gen,
+                "expected_result": expected_result,
             })
 
     return test_cases
@@ -42,15 +46,27 @@ for test in tests:
     print("---------------------------------")
     print("Running test case:")
     print(test["label"])
-    file1 = f"reference-{test["id"]}.xml"
+    #file1 = f"reference-{test["id"]}.xml"
+    file1 = f"reference.xml"
     with open(file1, "w", encoding="utf-8") as file:
         file.write(test["xml_reference"])
-    file2 = f"generates-{test["id"]}.xml"
+    #file2 = f"generates-{test["id"]}.xml"
+    file2 = f"generates.xml"
     with open(file2, "w", encoding="utf-8") as file:
         file.write(test["xml_generated"])
 
+    # Create a StringIO buffer to capture stdout
+    buffer = io.StringIO()
     try:
-        compare_xml_files(file1, file2)
-    except:
-        print("Invalid test case")
+        with redirect_stdout(buffer):
+            compare_xml_files(file1, file2)
+
+        # Get printed text
+        output = buffer.getvalue()
+        #print ( f"Output is this: {output}")
+        #print (f"value in dict is this: {test["expected_result"]}")
+        # todo: capture stdout
+        assert output == test["expected_result"], f"Expected: {test['expected_result']!r}, Got: {output!r}"
+    except Exception as e :
+        print(f"{e}")
     print("---------------------------------")

@@ -1,7 +1,7 @@
 ﻿CAHIER DE RECETTE N MESSAGES;;;;;;;;
 ;;;;;;;;
-N°;ID;BUT;EXEMPLES REFERENCES;EXEMPLES MESSAGES;COMMENTAIRES;;;
-VALEURES DIFFERENTES;;;;;;;In code;à refactoriser?
+N°;ID;BUT;EXEMPLES REFERENCES (FILE1);EXEMPLES MESSAGES (FILE2);COMMENTAIRES;RESULTAT ACTUELLE DE MON CODE (pas bon);RESULTAT ATTENDU;
+VALEURES DIFFERENTES;;;;;;;;
 TC1;1a – Valeur différente sur même nœud;Détecter qu’une valeur attendue a changé;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Order>
   <ID>100</ID>
@@ -10,7 +10,13 @@ TC1;1a – Valeur différente sur même nœud;Détecter qu’une valeur attendue
 <Order>
   <ID>200</ID> 
 </Order>
-";Valeur modifiée sur le nœud ;Penda;;
+";Valeur modifiée sur le nœud ;"
+Element count (Missing or extra child ) mismatch at //Order: 
+<ID>100</ID> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Order: 
+<ID>200</ID> appears 0 times in file1 vs 1 in file2";"Value mismatch at //Order/ID:
+file1 has ""100"" but file2 has ""200""
+";Penda
 TC2;1b – Valeur différente numérique VS Chaine;Détecter  qu'une valeur différente de type numérique VS chaine a change;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Document>
   <Qty>10</Qty>
@@ -19,7 +25,13 @@ TC2;1b – Valeur différente numérique VS Chaine;Détecter  qu'une valeur diff
 <Document>
   <Qty>""10""</Qty> 
 </Document>
-";Type chaîne au lieu de numérique ;Penda;;
+";Type chaîne au lieu de numérique ;"
+Element count (Missing or extra child ) mismatch at //Order: 
+<ID>100</ID> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Order: 
+<ID>200</ID> appears 0 times in file1 vs 1 in file2";"Type mismatch at //Document/Qty:
+file1 has int but file2 has string
+";Penda
 TC3;1c – Valeur différente – profondeur multiple;Détecter  qu'une valeur différente à profondeur >2;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Document>
   <A>
@@ -36,7 +48,33 @@ TC3;1c – Valeur différente – profondeur multiple;Détecter  qu'une valeur d
     </B>
   </A>
 </Document>
-";Valeur modifiée à profondeur 3 ;Penda;;
+";Valeur modifiée à profondeur 3 ;"Valeur différente – profondeur multiple
+Element count (Missing or extra child ) mismatch at //Document: 
+<A>
+    <B>
+      <C>bar</C> 
+    </B>
+  </A> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document: 
+<A>
+    <B>
+      <C>foo</C>
+    </B>
+  </A> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document/A: 
+<B>
+      <C>bar</C> 
+    </B> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document/A: 
+<B>
+      <C>foo</C>
+    </B> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document/A/B: 
+<C>bar</C> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document/A/B: 
+<C>foo</C> appears 1 times in file1 vs 0 in file2";"Value mismatch at //Document/A/B/C:
+file1 has ""foo"" but file2 has ""bar""
+";Penda
 NOEUDS MANQUANTS;;;;;;;;
 TC4;2a – Nœud manquant – feuille;Détecter  qu'un  nœud est manquant – Absence de nœud feuille;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <User>
@@ -47,7 +85,8 @@ TC4;2a – Nœud manquant – feuille;Détecter  qu'un  nœud est manquant – A
 <User>
   <Name>Jean Dupont</Name>
 </User>
-";  Email manquant ;Penda;Oui;Pas fini
+";  Email manquant ;"Element count (Missing or extra child ) mismatch at //User: 
+<Email>jean.dupont@example.com</Email> appears 1 times in file1 vs 0 in file2";Missing  //User/Email in file2;Penda
 TC5;2b – Nœud manquant – branche entière;Détecter  qu'un  nœud est manquant – Arborescence manquante;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <User>
   <Address>
@@ -58,7 +97,11 @@ TC5;2b – Nœud manquant – branche entière;Détecter  qu'un  nœud est manqu
 ";"<?xml version=""1.0"" encoding=""UTF-8""?>
 <User>
 </User>
-";  Address manquant intégralement ;Penda;Oui;Pas fini
+";  Address manquant intégralement ;"Element count (Missing or extra child ) mismatch at //User: 
+<Address>
+    <Street>1 rue A</Street>
+    <City>Paris</City>
+  </Address> appears 1 times in file1 vs 0 in file2";Missing  //User/Address in file2;Penda
 NOEUDS SUPPLEMENTAIRES;;;;;;;;
 TC6;3a – Nœud supplémentaire – feuille;Présence inattendue de nœud feuille;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Order>
@@ -69,7 +112,8 @@ TC6;3a – Nœud supplémentaire – feuille;Présence inattendue de nœud feuil
   <TotalAmount>100</TotalAmount>
   <Discount>10</Discount> 
 </Order>
-";Nœud feuille supplémentaire ;Penda;Oui;Pas fini
+";Nœud feuille supplémentaire ;"Element count (Missing or extra child ) mismatch at //Order: 
+<Discount>10</Discount> appears 0 times in file1 vs 1 in file2";Unexpected node  //Order/Discount in file2;Penda
 TC7;3b – Nœud supplémentaire – sous-branche;Arborescence manquante;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Order>
   <Items>
@@ -85,7 +129,21 @@ TC7;3b – Nœud supplémentaire – sous-branche;Arborescence manquante;"<?xml 
     </ItemDetails> 
   </Items>
 </Order>
-";Noeud sous-branche supplémentaire;Penda;Oui;Pas fini
+";Noeud sous-branche supplémentaire;"Element count (Missing or extra child ) mismatch at //Order: 
+<Items>
+    <Item>ID1</Item>
+    <ItemDetails>
+      <Detail>A</Detail>
+    </ItemDetails> 
+  </Items> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Order: 
+<Items>
+    <Item>ID1</Item>
+  </Items> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Order/Items: 
+<ItemDetails>
+      <Detail>A</Detail>
+    </ItemDetails> appears 0 times in file1 vs 1 in file2";Unexpected node //Order/ItemDetails in file2;Penda
 ORDRE DE NOEUDS;;;;;;;;
 TC8;4a – Nœuds hors ordre / équivalence;Reconnaître l’équivalence malgré un ordre différent;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Parents>
@@ -105,7 +163,31 @@ TC8;4a – Nœuds hors ordre / équivalence;Reconnaître l’équivalence malgr�
     </Loisirs>
   </Parent>
 </Parents>
-";Ordre inversé ;Penda;Oui;Pas fini
+";Ordre inversé ;"Element count (Missing or extra child ) mismatch at //Parents: 
+<Parent Role=""Père"">
+    <Loisirs>
+      <Loisir>Photographie</Loisir> 
+      <Loisir>Football</Loisir>
+    </Loisirs>
+  </Parent> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Parents: 
+<Parent Role=""Père"">
+    <Loisirs>
+      <Loisir>Football</Loisir>
+      <Loisir>Photographie</Loisir>
+    </Loisirs>
+  </Parent> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Parents/Parent: 
+<Loisirs>
+      <Loisir>Football</Loisir>
+      <Loisir>Photographie</Loisir>
+    </Loisirs> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Parents/Parent: 
+<Loisirs>
+      <Loisir>Photographie</Loisir> 
+      <Loisir>Football</Loisir>
+    </Loisirs> appears 0 times in file1 vs 1 in file2
+Elements at //Parents/Parent/Loisirs are equivalent but in different order";"Elements at //Parents/Parent[Role=""Père]/Loisirs are equivalent but in different order";Penda
 TC9;4b –  Hors ordre – plusieurs nœuds;Détecter plusieurs nœuds hors ordre ;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Items>
   <A/>
@@ -118,7 +200,7 @@ TC9;4b –  Hors ordre – plusieurs nœuds;Détecter plusieurs nœuds hors ordr
   <A/>
   <B/>
 </Items>
-";Réarrangement de l’ordre ;Penda;Oui;Pas fini
+";Réarrangement de l’ordre ;Elements at //Items are equivalent but in different order;Elements at //Items are equivalent but in different order;Penda
 TC10;4c – Hors ordre vs duplication;Déctecter la duplication de noeuds hors ordre ;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Tags>
   <Tag>X</Tag>
@@ -129,7 +211,7 @@ TC10;4c – Hors ordre vs duplication;Déctecter la duplication de noeuds hors o
   <Tag>X</Tag>
   <Tag>X</Tag> 
 </Tags>
-";Même contenu mais ordre probablement changé → suspicion ;Penda;Oui;Pas fini
+";Même contenu mais ordre probablement changé → suspicion ;Duplicate element at //Tags: hash=0b660e0b appears 2 times in file1, 2 times in file2;??;Penda
 EXCLUSION SIMULTANNEE DE CHAMPS;;;;;;;;
 TC11;5a – Exclusion unique – timestamp;Ignorer la valeur du timestamp;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Document>
@@ -139,7 +221,10 @@ TC11;5a – Exclusion unique – timestamp;Ignorer la valeur du timestamp;"<?xml
 <Document>
   <TS>2025-07-17T10:05:22Z</TS> 
 </Document>
-";Timestamp modifié mais ignoré;Penda;;
+";Timestamp modifié mais ignoré;"Element count (Missing or extra child ) mismatch at //Document: 
+<TS>2025-07-17T10:00:00Z</TS> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document: 
+<TS>2025-07-17T10:05:22Z</TS> appears 0 times in file1 vs 1 in file2";File OK;Penda
 TC12;5b – Exclusion multiple – timestamp & uuid;Ignorer plusieurs champs variables;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Document>
   <TS>2025-07-17T14:30:00Z</TS>
@@ -152,7 +237,14 @@ TC12;5b – Exclusion multiple – timestamp & uuid;Ignorer plusieurs champs var
   <MessageUUID>660e9511-f38c-52e7-b827-557766550111</MessageUUID> 
   <Content>Some data</Content>
 </Document>
-";  Timestamp modifié         UUID modifié ;Penda;;
+";  Timestamp modifié         UUID modifié ;"Element count (Missing or extra child ) mismatch at //Document: 
+<MessageUUID>660e9511-f38c-52e7-b827-557766550111</MessageUUID> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document: 
+<MessageUUID>550e8400-e29b-41d4-a716-446655440000</MessageUUID> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document: 
+<TS>2025-07-17T14:30:00Z</TS> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document: 
+<TS>2025-07-17T15:45:22Z</TS> appears 0 times in file1 vs 1 in file2";File OK;Penda
 UUID IMBRIQUES;;;;;;;;
 TC13;6a – UUID – 1ʳᵉ profondeur;Ignorer la valeur d'un  UUID au niveau de la 1ʳᵉ occurrence;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Root>
@@ -162,7 +254,10 @@ TC13;6a – UUID – 1ʳᵉ profondeur;Ignorer la valeur d'un  UUID au niveau de
 <Root>
   <UUID>xyz</UUID> 
 </Root>
-";Valeur modifiée, mais doit être ignorée ;Penda;;
+";Valeur modifiée, mais doit être ignorée ;"Element count (Missing or extra child ) mismatch at //Root: 
+<UUID>abc</UUID> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Root: 
+<UUID>xyz</UUID> appears 0 times in file1 vs 1 in file2";File OK;Penda
 TC14;6b – UUID Kᵉ occurrence;Ignorer la valeur d'un  UUID au niveau de la 2éme occurrence;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Root>
   <UUID>ID1</UUID>
@@ -173,7 +268,10 @@ TC14;6b – UUID Kᵉ occurrence;Ignorer la valeur d'un  UUID au niveau de la 2�
   <UUID>ID1</UUID>
   <UUID>NEWID2</UUID> 
 </Root>
-";Modification uniquement sur la 2ᵉ occurrence, doit être ignorée ;Penda;;
+";Modification uniquement sur la 2ᵉ occurrence, doit être ignorée ;"Element count (Missing or extra child ) mismatch at //Root: 
+<UUID>ID2</UUID> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Root: 
+<UUID>NEWID2</UUID> appears 0 times in file1 vs 1 in file2";File OK;Penda
 TC15;6c – UUID à profondeur arbitraire;Exclure la valeur d’un <UUID> à un niveau imbriqué;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Parent>
   <A>
@@ -186,7 +284,18 @@ TC15;6c – UUID à profondeur arbitraire;Exclure la valeur d’un <UUID> à un 
     <UUID>new‑uuid‑value</UUID> 
   </A>
 </Parent>
-";Valeur différente à profondeur >1, ignorée ;Penda;;
+";Valeur différente à profondeur >1, ignorée ;"Element count (Missing or extra child ) mismatch at //Parent: 
+<A>
+    <UUID>new‑uuid‑value</UUID> 
+  </A> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Parent: 
+<A>
+    <UUID>orig‑uuid</UUID>
+  </A> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Parent/A: 
+<UUID>orig‑uuid</UUID> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Parent/A: 
+<UUID>new‑uuid‑value</UUID> appears 0 times in file1 vs 1 in file2";File OK;Penda
 TC16;6d – Exclusion multiple de clés;Exlusion de la valeur <UUID> et <SessionID>;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Session>
   <SessionID>S1</SessionID>
@@ -199,7 +308,14 @@ TC16;6d – Exclusion multiple de clés;Exlusion de la valeur <UUID> et <Session
   <UUID>NEW-ID</UUID>       
   <Data>Payload</Data>
 </Session>
-"; SessionID modifié, mais exclu                                         UUID modifié, mais exclu ;Penda;;
+"; SessionID modifié, mais exclu                                         UUID modifié, mais exclu ;"Element count (Missing or extra child ) mismatch at //Session: 
+<UUID>NEW-ID</UUID> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Session: 
+<UUID>ID1</UUID> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Session: 
+<SessionID>S1</SessionID> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Session: 
+<SessionID>S2</SessionID> appears 0 times in file1 vs 1 in file2";File OK;Penda
 VERIFICATION DES PROFONDEURS;;;;;;;;
 TC17;7a -Profondeur 3 – valeur;Valeur profonde – profondeur 3;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Document>
@@ -217,7 +333,32 @@ TC17;7a -Profondeur 3 – valeur;Valeur profonde – profondeur 3;"<?xml version
     </B>
   </A>
 </Document>
-";Valeur modifiée à profondeur 3 ;Penda;;
+";Valeur modifiée à profondeur 3 ;"Element count (Missing or extra child ) mismatch at //Document: 
+<A>
+    <B>
+      <C>v2</C> 
+    </B>
+  </A> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document: 
+<A>
+    <B>
+      <C>v1</C>
+    </B>
+  </A> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document/A: 
+<B>
+      <C>v2</C> 
+    </B> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document/A: 
+<B>
+      <C>v1</C>
+    </B> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document/A/B: 
+<C>v2</C> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document/A/B: 
+<C>v1</C> appears 1 times in file1 vs 0 in file2";"Value mismatch at //Document/A/B/C:
+file1 has ""v1"" but file2 has ""v2""
+";Penda
 TC18;7b - Profondeur N – valeur;Valeur profonde – profondeur variable;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Document>
   <A>
@@ -242,7 +383,68 @@ TC18;7b - Profondeur N – valeur;Valeur profonde – profondeur variable;"<?xml
     </B>
   </A>
 </Document>
-"; Valeur modifiée à profondeur >3;Penda;;
+"; Valeur modifiée à profondeur >3;"Element count (Missing or extra child ) mismatch at //Document: 
+<A>
+    <B>
+      <C>
+        <D>
+          <E>deep</E>
+        </D>
+      </C>
+    </B>
+  </A> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document: 
+<A>
+    <B>
+      <C>
+        <D>
+          <E>changed</E>
+        </D>
+      </C>
+    </B>
+  </A> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document/A: 
+<B>
+      <C>
+        <D>
+          <E>deep</E>
+        </D>
+      </C>
+    </B> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document/A: 
+<B>
+      <C>
+        <D>
+          <E>changed</E>
+        </D>
+      </C>
+    </B> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document/A/B: 
+<C>
+        <D>
+          <E>deep</E>
+        </D>
+      </C> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document/A/B: 
+<C>
+        <D>
+          <E>changed</E>
+        </D>
+      </C> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document/A/B/C: 
+<D>
+          <E>changed</E>
+        </D> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document/A/B/C: 
+<D>
+          <E>deep</E>
+        </D> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document/A/B/C/D: 
+<E>deep</E> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document/A/B/C/D: 
+<E>changed</E> appears 0 times in file1 vs 1 in file2";"Value mismatch at //Document/A/B/C/D/E:
+file1 has ""deep"" but file2 has ""changed""
+";Penda
 VERIFICATION DES CLES;;;;;;;;
 TC19;8a- Clé enracine vs sous‑branche;Clé enracine vs sous-branche;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Document>
@@ -258,7 +460,19 @@ TC19;8a- Clé enracine vs sous‑branche;Clé enracine vs sous-branche;"<?xml ve
     <Key>MODIF_S</Key> 
   </Parent>
 </Document>
-";La seconde clé modifiée uniquement ;Penda;;
+";La seconde clé modifiée uniquement ;"Element count (Missing or extra child ) mismatch at //Document: 
+<Parent>
+    <Key>S</Key>
+  </Parent> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document: 
+<Parent>
+    <Key>MODIF_S</Key> 
+  </Parent> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document/Parent: 
+<Key>MODIF_S</Key> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document/Parent: 
+<Key>S</Key> appears 1 times in file1 vs 0 in file2";"Value mismatch at //Document/Parent/Key:
+file1 has ""S"" but file2 has ""MODIF_S""";Penda
 TC20;8b- Clé enracine vs sous‑branche;Clé duplicata – trois occurrences;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Document>
   <Keys>
@@ -275,7 +489,23 @@ TC20;8b- Clé enracine vs sous‑branche;Clé duplicata – trois occurrences;"<
     <Key>BAD_K3</Key> 
   </Keys>
 </Document>
-";Seule la 3ᵉ occurrence modifiée ;Penda;;
+";Seule la 3ᵉ occurrence modifiée ;"Element count (Missing or extra child ) mismatch at //Document: 
+<Keys>
+    <Key>K1</Key>
+    <Key>K2</Key>
+    <Key>BAD_K3</Key> 
+  </Keys> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Document: 
+<Keys>
+    <Key>K1</Key>
+    <Key>K2</Key>
+    <Key>K3</Key>
+  </Keys> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document/Keys: 
+<Key>K3</Key> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document/Keys: 
+<Key>BAD_K3</Key> appears 0 times in file1 vs 1 in file2";"Value mismatch at //Document/Parent/Keys/Key[2]:
+file1 has ""K3"" but file2 has ""BAD_K3""";Penda
 VALEURS & ORDRES;;;;;;;;
 TC21;9a- Existence + valeur unique;Existence + valeur unique;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Document>
@@ -295,7 +525,7 @@ SCENARIO 2 (<Qty> valeur non conforme)
   <Qty>0</Qty> 
 </Document>
 ";"<Qty> absent 
-Valeur <1 → doit être signalée ";Penda;;
+Valeur <1 → doit être signalée ";Invalid test case;??????;Penda
 TC22;9b- Existence + ordre;Existence + ordre;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Document>
   <Items>
@@ -312,7 +542,19 @@ TC22;9b- Existence + ordre;Existence + ordre;"<?xml version=""1.0"" encoding=""U
     <Item>C</Item> 
   </Items>
 </Document>
-";Ordre A/B/C non respecté ;Penda;;
+";Ordre A/B/C non respecté ;"Element count (Missing or extra child ) mismatch at //Document: 
+<Items>
+    <Item>A</Item>
+    <Item>B</Item>
+    <Item>C</Item>
+  </Items> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document: 
+<Items>
+    <Item>B</Item>
+    <Item>A</Item>
+    <Item>C</Item> 
+  </Items> appears 0 times in file1 vs 1 in file2
+Elements at //Document/Items are equivalent but in different order";Elements at //Document/Items are equivalent but in different order;Penda
 TC23;9c- Valeur + exclusion de champ;Valeur + exclusion de champ;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Document>
   <Order>
@@ -328,7 +570,7 @@ TC23;9c- Valeur + exclusion de champ;Valeur + exclusion de champ;"<?xml version=
   </Order>
 </Document>
 ";"  Valeur incorrecte -->
- À exclure ";Penda;;
+ À exclure ";Invalid test case;File OK;Penda
 COMMENTAIRES VARIABLES;;;;;;;;
 TC24;10a – Exclusion de tag commentaire variable;Commentaire – début fixe;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Document>
@@ -338,7 +580,10 @@ TC24;10a – Exclusion de tag commentaire variable;Commentaire – début fixe;"
 <Document>
   <Notes>VOITURE [QA‑123]</Notes> 
 </Document>
-";Suffixe variable accepté ;Penda;;
+";Suffixe variable accepté ;"Element count (Missing or extra child ) mismatch at //Document: 
+<Notes>VOITURE</Notes> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Document: 
+<Notes>VOITURE [QA‑123]</Notes> appears 0 times in file1 vs 1 in file2";File OK;Penda
 TC25;10b – Exclusion de tag commentaire variable;Commentaire – suffixe multiple;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Document>
   <Notes>VOITURE</Notes>
@@ -357,7 +602,7 @@ Variante 2
 <Document>
   <Notes>VOITURE [BATCH 123]</Notes>
 </Document>
-";Plusieurs variantes de suffixe acceptées;Penda;;
+";Plusieurs variantes de suffixe acceptées;Invalid test case;File OK;Penda
 IDENTIQUES HORS ORDRE;;;;;;;;
 TC26;11a- Éléments identiques hors ordre;Suspicion d’équivalence (éléments identiques hors ordre);"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Values>
@@ -367,7 +612,10 @@ TC26;11a- Éléments identiques hors ordre;Suspicion d’équivalence (élément
 <Values>
   <Y>123</Y> 
 </Values>
-";Contenu identique mais balise différente → suspicion d’équivalence ;Penda;Oui;Pas fini
+";Contenu identique mais balise différente → suspicion d’équivalence ;"Element count (Missing or extra child ) mismatch at //Values: 
+<X>123</X> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Values: 
+<Y>123</Y> appears 0 times in file1 vs 1 in file2";Missing  //Values/X in file2. Unexpected node //Values/Y in file2;Penda
 TC27;11b- Multiples x identiques hors ordre;Multiples identiques hors ordre (suspicions multiples);"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Tags>
   <Tag>A</Tag>
@@ -380,7 +628,7 @@ TC27;11b- Multiples x identiques hors ordre;Multiples identiques hors ordre (sus
   <Tag>C</Tag>
   <Tag>A</Tag>
 </Tags>
-";Echange multiple → suspicion générale sur l’ordre ;Penda;Oui;Pas fini
+";Echange multiple → suspicion générale sur l’ordre ;Elements at //Tags are equivalent but in different order;Elements at //Tags are equivalent but in different order;Penda
 BRANCHES;;;;;;;;
 TC28;"12a- Plusieurs branches simultanées
 ";Branches multiples – ordre aléatoire;"<?xml version=""1.0"" encoding=""UTF-8""?>
@@ -398,7 +646,7 @@ TC28;"12a- Plusieurs branches simultanées
   <C/>
 </Root> 
 
-";Ordre changé → considéré comme équivalent si ordre non significatif ;Penda;Oui;Pas fini
+";Ordre changé → considéré comme équivalent si ordre non significatif ;Elements at //Root are equivalent but in different order;Elements at //Root are equivalent but in different order;Penda
 TC29;12b- Branches imbriquées multiples;Branches imbriquées multiples avec ordre inversé;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Root>
   <A>
@@ -421,7 +669,42 @@ TC29;12b- Branches imbriquées multiples;Branches imbriquées multiples avec ord
     <A1/>
   </A>
 </Root> 
-";Ordre interne et externe inversés mais syntaxiquement équivalent;Penda;Oui;Pas fini
+";Ordre interne et externe inversés mais syntaxiquement équivalent;"Element count (Missing or extra child ) mismatch at //Root: 
+<B>
+    <B1 />
+    <B2 />
+  </B> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Root: 
+<B>
+    <B2 />
+    <B1 />
+  </B> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Root: 
+<A>
+    <A1 />
+    <A2 />
+  </A> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Root: 
+<A>
+    <A2 />
+    <A1 />
+  </A> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Root/A: 
+<B2 /> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Root/A: 
+<B1 /> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Root/A: 
+<A2 /> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Root/A: 
+<A1 /> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Root/B: 
+<B2 /> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Root/B: 
+<A1 /> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Root/B: 
+<A2 /> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Root/B: 
+<B1 /> appears 1 times in file1 vs 0 in file2";Elements at //Root are equivalent but in different order. Elements at //Root/A are equivalent but in different order. Elements at //Root/B are equivalent but in different order;Penda
 PRESENCE ET ABSENCE DE NEOUDS;;;;;;;;
 TC30;13a- Existence + absence;Ajout du nœud manquant;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Root>
@@ -433,7 +716,8 @@ TC30;13a- Existence + absence;Ajout du nœud manquant;"<?xml version=""1.0"" enc
   <Price>100</Price>
   <Discount>5</Discount>
 </Root>
-"; Ajout d’un nœud Discount manquant ;Penda;;
+"; Ajout d’un nœud Discount manquant ;"Element count (Missing or extra child ) mismatch at //Root: 
+<Discount>5</Discount> appears 0 times in file1 vs 1 in file2";Missing  //Root/Discount in file2;Penda
 TC31;13b- Valeur + existence;Valeur modifiée + suppression;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Root>
   <Qty>2</Qty>
@@ -445,7 +729,13 @@ TC31;13b- Valeur + existence;Valeur modifiée + suppression;"<?xml version=""1.0
 </Root>
 ";"  Valeur modifiée de 2 → 0 
   Status absent 
-Suppression intentionnelle du nœud Status ";Penda;;
+Suppression intentionnelle du nœud Status ";"Element count (Missing or extra child ) mismatch at //Root: 
+<Qty>2</Qty> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Root: 
+<Status>OK</Status> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Root: 
+<Qty>0</Qty> appears 0 times in file1 vs 1 in file2";"Missing  //Root/Status in file2. Value mismatch at //Root/Qty:
+file1 has ""2"" but file2 has ""0""";Penda
 TC32;13c- Valeur + Ajout;Valeur conservée + ajout conditionnel;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Root>
   <Price>50</Price>
@@ -455,7 +745,8 @@ TC32;13c- Valeur + Ajout;Valeur conservée + ajout conditionnel;"<?xml version="
   <Price>50</Price>
   <Promo>10%</Promo> 
 </Root>
-";Ajout d’un nœud Promo manquant ;Penda;;
+";Ajout d’un nœud Promo manquant ;"Element count (Missing or extra child ) mismatch at //Root: 
+<Promo>10%</Promo> appears 0 times in file1 vs 1 in file2";Unexpected node  //Order/Promo in file2;Penda
 TC33;13d- Exclusion + valeur + absence;Modification combinée + ajout;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Root>
   <TS>…</TS>
@@ -470,7 +761,17 @@ TC33;13d- Exclusion + valeur + absence;Modification combinée + ajout;"<?xml ver
 </Root>
 ";"TS modifié 
 Montant réduit de 200 → 150 
-Ajout d’un nœud Fee manquant ";Penda;;
+Ajout d’un nœud Fee manquant ";"Element count (Missing or extra child ) mismatch at //Root: 
+<Amt>200</Amt> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Root: 
+<Fee>20</Fee> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Root: 
+<TS>…modifié…</TS> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Root: 
+<TS>…</TS> appears 1 times in file1 vs 0 in file2
+Element count (Missing or extra child ) mismatch at //Root: 
+<Amt>150</Amt> appears 0 times in file1 vs 1 in file2";"Value mismatch at //Root/TS:
+file1 has ""..."" but file2 has ""…modifié…"". Unexpected node  //Order/Fee in file2";Penda
 LOT;;;;;;;;
 TC34;14a- Lot petit volume (N=5);Volume itératif (synthèse des résultats);"<?xml version=""1.0"" encoding=""UTF-8""?>
 <TestSummary>
@@ -480,7 +781,7 @@ TC34;14a- Lot petit volume (N=5);Volume itératif (synthèse des résultats);"<?
 <TestSummary>
   Lot de 5 tests : 4 passent, 1 échoue → synthèse « 4 ok, 1 échec » 
 </TestSummary>
-";Résumé des résultats de tests ;Penda;;
+";Résumé des résultats de tests ;;??????;Penda
 FACULTATIF;;;;;;;;
 TC37;"15a- Facultatif – valeur conforme
 ";Valeur conforme;"<?xml version=""1.0"" encoding=""UTF-8""?>
@@ -491,7 +792,7 @@ TC37;"15a- Facultatif – valeur conforme
 <Root>
   <Optional>YES</Optional> 
 </Root>
-";Facultatif et conforme, aucun changement détecté ;Penda;;
+";Facultatif et conforme, aucun changement détecté ;;File OK;Penda
 TC38;"15b- Facultatif – absent
 
 ";Valeur absente;"<?xml version=""1.0"" encoding=""UTF-8""?>
@@ -500,7 +801,7 @@ TC38;"15b- Facultatif – absent
 ";"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Root>
 </Root>
-"; Nœud Optional toujours absent — Cas inchangé ;Penda;;
+"; Nœud Optional toujours absent — Cas inchangé ;;File OK;Penda
 TC39;"15c- Facultatif + valeur erronée
 ";Valeur eronnée;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Root>
@@ -510,4 +811,8 @@ TC39;"15c- Facultatif + valeur erronée
 <Root>
   <Optional>BAD</Optional> 
 </Root>
-";Valeur modifiée de YES → BAD pour test d’erreur ;Penda;;
+";Valeur modifiée de YES → BAD pour test d’erreur ;"Element count (Missing or extra child ) mismatch at //Root: 
+<Optional>BAD</Optional> appears 0 times in file1 vs 1 in file2
+Element count (Missing or extra child ) mismatch at //Root: 
+<Optional>YES</Optional> appears 1 times in file1 vs 0 in file2";"Value mismatch at //Root/Optional:
+file1 has ""YES"" but file2 has ""BAD""";Penda
