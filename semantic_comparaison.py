@@ -94,9 +94,12 @@ def compare_children_equivalence(e1, e2, path="/"):
             element = hash_to_elem1.get(h)
             if element is None:
                 element = hash_to_elem2.get(h)
+                print(f"Unexpected node {current_path}/{element.tag} in file2")
+            else:
+                print(f"Missing {current_path}/{element.tag} in file2")
             xml_str = ET.tostring(element, encoding='unicode').strip()
             #print(f"Duplicate element at {current_path}: appears {c1} times in file1, {c2} times in file2:\n{xml_str}")
-            print(f"Element count (Missing or extra child ) mismatch at {current_path}: \n{xml_str} appears {c1} times in file1 vs {c2} in file2")
+            #print(f"Element count (Missing or extra child ) mismatch at {current_path}: \n{xml_str} appears {c1} times in file1 vs {c2} in file2")
 
     # Check for same content but different order
     # This checks if:

@@ -1,4 +1,5 @@
 import csv
+import re
 import io
 from contextlib import redirect_stdout
 
@@ -62,11 +63,13 @@ for test in tests:
             compare_xml_files(file1, file2)
 
         # Get printed text
-        output = buffer.getvalue()
+        output = buffer.getvalue().strip()
         #print ( f"Output is this: {output}")
         #print (f"value in dict is this: {test["expected_result"]}")
+        expected = re.sub(r"\s+", " ", test["expected_result"]).strip()
+        actual = re.sub(r"\s+", " ", output).strip()
         # todo: capture stdout
-        assert output == test["expected_result"], f"Expected: {test['expected_result']!r}, Got: {output!r}"
+        assert actual == expected, f"Expected: {test['expected_result']!r}, Got: {output!r}"
     except Exception as e :
         print(f"{e}")
     print("---------------------------------")

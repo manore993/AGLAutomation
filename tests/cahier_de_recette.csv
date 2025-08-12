@@ -86,7 +86,7 @@ TC4;2a – Nœud manquant – feuille;Détecter  qu'un  nœud est manquant – A
   <Name>Jean Dupont</Name>
 </User>
 ";  Email manquant ;"Element count (Missing or extra child ) mismatch at //User: 
-<Email>jean.dupont@example.com</Email> appears 1 times in file1 vs 0 in file2";Missing  //User/Email in file2;Penda
+<Email>jean.dupont@example.com</Email> appears 1 times in file1 vs 0 in file2";Missing //User/Email in file2;Penda
 TC5;2b – Nœud manquant – branche entière;Détecter  qu'un  nœud est manquant – Arborescence manquante;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <User>
   <Address>
@@ -101,7 +101,7 @@ TC5;2b – Nœud manquant – branche entière;Détecter  qu'un  nœud est manqu
 <Address>
     <Street>1 rue A</Street>
     <City>Paris</City>
-  </Address> appears 1 times in file1 vs 0 in file2";Missing  //User/Address in file2;Penda
+  </Address> appears 1 times in file1 vs 0 in file2";Missing //User/Address in file2;Penda
 NOEUDS SUPPLEMENTAIRES;;;;;;;;
 TC6;3a – Nœud supplémentaire – feuille;Présence inattendue de nœud feuille;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Order>
@@ -113,7 +113,7 @@ TC6;3a – Nœud supplémentaire – feuille;Présence inattendue de nœud feuil
   <Discount>10</Discount> 
 </Order>
 ";Nœud feuille supplémentaire ;"Element count (Missing or extra child ) mismatch at //Order: 
-<Discount>10</Discount> appears 0 times in file1 vs 1 in file2";Unexpected node  //Order/Discount in file2;Penda
+<Discount>10</Discount> appears 0 times in file1 vs 1 in file2";Unexpected node //Order/Discount in file2;Penda
 TC7;3b – Nœud supplémentaire – sous-branche;Arborescence manquante;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Order>
   <Items>
@@ -615,7 +615,7 @@ TC26;11a- Éléments identiques hors ordre;Suspicion d’équivalence (élément
 ";Contenu identique mais balise différente → suspicion d’équivalence ;"Element count (Missing or extra child ) mismatch at //Values: 
 <X>123</X> appears 1 times in file1 vs 0 in file2
 Element count (Missing or extra child ) mismatch at //Values: 
-<Y>123</Y> appears 0 times in file1 vs 1 in file2";Missing  //Values/X in file2. Unexpected node //Values/Y in file2;Penda
+<Y>123</Y> appears 0 times in file1 vs 1 in file2";Missing //Values/X in file2. Unexpected node //Values/Y in file2;Penda
 TC27;11b- Multiples x identiques hors ordre;Multiples identiques hors ordre (suspicions multiples);"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Tags>
   <Tag>A</Tag>
@@ -717,7 +717,7 @@ TC30;13a- Existence + absence;Ajout du nœud manquant;"<?xml version=""1.0"" enc
   <Discount>5</Discount>
 </Root>
 "; Ajout d’un nœud Discount manquant ;"Element count (Missing or extra child ) mismatch at //Root: 
-<Discount>5</Discount> appears 0 times in file1 vs 1 in file2";Missing  //Root/Discount in file2;Penda
+<Discount>5</Discount> appears 0 times in file1 vs 1 in file2";Unexpected node //Root/Discount in file2;Penda
 TC31;13b- Valeur + existence;Valeur modifiée + suppression;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Root>
   <Qty>2</Qty>
@@ -734,7 +734,7 @@ Suppression intentionnelle du nœud Status ";"Element count (Missing or extra ch
 Element count (Missing or extra child ) mismatch at //Root: 
 <Status>OK</Status> appears 1 times in file1 vs 0 in file2
 Element count (Missing or extra child ) mismatch at //Root: 
-<Qty>0</Qty> appears 0 times in file1 vs 1 in file2";"Missing  //Root/Status in file2. Value mismatch at //Root/Qty:
+<Qty>0</Qty> appears 0 times in file1 vs 1 in file2";"Unexpected node //Root/Status in file2. Value mismatch at //Root/Qty:
 file1 has ""2"" but file2 has ""0""";Penda
 TC32;13c- Valeur + Ajout;Valeur conservée + ajout conditionnel;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Root>
@@ -746,7 +746,7 @@ TC32;13c- Valeur + Ajout;Valeur conservée + ajout conditionnel;"<?xml version="
   <Promo>10%</Promo> 
 </Root>
 ";Ajout d’un nœud Promo manquant ;"Element count (Missing or extra child ) mismatch at //Root: 
-<Promo>10%</Promo> appears 0 times in file1 vs 1 in file2";Unexpected node  //Order/Promo in file2;Penda
+<Promo>10%</Promo> appears 0 times in file1 vs 1 in file2";Unexpected node  //Root/Promo in file2;Penda
 TC33;13d- Exclusion + valeur + absence;Modification combinée + ajout;"<?xml version=""1.0"" encoding=""UTF-8""?>
 <Root>
   <TS>…</TS>
