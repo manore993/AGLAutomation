@@ -68,12 +68,16 @@ for test in tests:
 
 
     # Custom message map
-    def custom_message(op):
+    def custom_message(op, inserted_nodes):
         if isinstance(op, actions.DeleteNode):
             return f'Missing "{op.node}" from file2'
         elif isinstance(op, actions.InsertNode):
+            inserted_nodes.add(op.tag)
             return f'Unexpected "{op.tag}" in file2'
         elif isinstance(op, actions.UpdateTextIn):
+            parent_path = op.node.split('/')[-1].split('[')[0]
+            if parent_path in inserted_nodes:
+                return None
             new_value = op.text
             result_old_values = tree1.xpath(op.node)
             old_value = result_old_values[0].text if len(result_old_values)>0 else ""
@@ -83,8 +87,9 @@ for test in tests:
         return None
 
 
+    inserted_nodes = set()
     # Display custom messages
     for op in ops:
-        msg = custom_message(op)
+        msg = custom_message(op, inserted_nodes)
         if msg:
             print(msg)
