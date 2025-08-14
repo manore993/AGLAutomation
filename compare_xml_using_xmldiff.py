@@ -1,6 +1,7 @@
 import csv
 from lxml import etree
 from xmldiff import main, formatting, actions
+import re
 
 
 def read_relevant_test_cases(csv_file_path):
@@ -83,9 +84,17 @@ for test in tests:
             return f'Unexpected "{op.tag}" in file2'
         elif isinstance(op, actions.UpdateTextIn):
             parent_path = op.node.split('/')[-1].split('[')[0]
-            #print(f' parent path is : ', parent_path)
+            #print(f' parent ath is : ', parent_path)
             #print(f' node is : ', op.node)
-            if parent_path in inserted_nodes or parent_path in deleted_nodes:
+
+            pattern_uuid = re.compile(r'UUID', re.IGNORECASE)
+            pattern_timestamp = re.compile(r'TS', re.IGNORECASE)
+            pattern_session_id = re.compile(r'SessionID', re.IGNORECASE)
+
+            if pattern_uuid.search(parent_path) is not None or pattern_timestamp is not None or pattern_session_id is not None:
+                return None
+
+            if parent_path in inserted_nodes or parent_path in deleted_nodes :
                 return None
             new_value = op.text
             result_old_values = tree1.xpath(op.node)
