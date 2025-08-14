@@ -60,6 +60,8 @@ for test in tests:
     # Run xmldiff in 'diff_files' mode to get structured actions
     ops = main.diff_files(file1, file2, diff_options={'F': 0.1})  # F=similarity threshold
 
+    # ops.sort(key=lambda x: 0 if isinstance(x, actions.DeleteNode) or isinstance(x, actions.InsertNode) else 1)
+
     def get_type(text):
         if len(text) > 1 and text[0] == '"':
             return "string"
@@ -68,28 +70,46 @@ for test in tests:
 
 
     # Custom message map
-    def custom_message(op, inserted_nodes):
+    def custom_message(op, inserted_nodes, deleted_nodes):
         if isinstance(op, actions.DeleteNode):
+            parent_path = '/'.join(op.node.split('/')[0:-1])
+
+            if parent_path in deleted_nodes:
+                return None
+
             return f'Missing "{op.node}" from file2'
         elif isinstance(op, actions.InsertNode):
             inserted_nodes.add(op.tag)
             return f'Unexpected "{op.tag}" in file2'
         elif isinstance(op, actions.UpdateTextIn):
             parent_path = op.node.split('/')[-1].split('[')[0]
-            if parent_path in inserted_nodes:
+            #print(f' parent path is : ', parent_path)
+            #print(f' node is : ', op.node)
+            if parent_path in inserted_nodes or parent_path in deleted_nodes:
                 return None
             new_value = op.text
             result_old_values = tree1.xpath(op.node)
             old_value = result_old_values[0].text if len(result_old_values)>0 else ""
             if get_type(new_value) != get_type(old_value):
                 return f'Type mismatched at "{op.node}" : file1 has {get_type(old_value)} and file2 has {get_type(new_value)}'
+            if new_value.strip() == old_value.strip():
+                return None
             return f'Value changed in "{op.node}" from {old_value} to {new_value}'
         return None
 
+    def find_deletes(ops):
+        result = set()
+        for op in ops:
+            if isinstance(op, actions.DeleteNode):
+                current_path = op.node.split('[')[0]
+                result.add(current_path)
+        return result
 
+    deleted_nodes = find_deletes(ops)
     inserted_nodes = set()
+    # deleted_nodes = set()
     # Display custom messages
     for op in ops:
-        msg = custom_message(op, inserted_nodes)
+        msg = custom_message(op, inserted_nodes, deleted_nodes)
         if msg:
             print(msg)
