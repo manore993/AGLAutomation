@@ -71,7 +71,7 @@ for test in tests:
 
 
     # Custom message map
-    def custom_message(op, inserted_nodes, deleted_nodes):
+    def custom_message(op, inserted_nodes, deleted_nodes, ignored_tags):
         if isinstance(op, actions.DeleteNode):
             parent_path = '/'.join(op.node.split('/')[0:-1])
 
@@ -87,12 +87,17 @@ for test in tests:
             #print(f' parent ath is : ', parent_path)
             #print(f' node is : ', op.node)
 
-            pattern_uuid = re.compile(r'UUID', re.IGNORECASE)
-            pattern_timestamp = re.compile(r'TS', re.IGNORECASE)
-            pattern_session_id = re.compile(r'SessionID', re.IGNORECASE)
+            for tag in ignored_tags:
+                pattern = re.compile(fr'{tag}', re.IGNORECASE)
+                #print(pattern.search(parent_path))
+                if pattern.search(parent_path) is not None:
+                    return None
+            #pattern_uuid = re.compile(r'UUID', re.IGNORECASE)
+            #pattern_timestamp = re.compile(r'TS', re.IGNORECASE)
+            #pattern_session_id = re.compile(r'SessionID', re.IGNORECASE)
 
-            if pattern_uuid.search(parent_path) is not None or pattern_timestamp is not None or pattern_session_id is not None:
-                return None
+            #if pattern_uuid.search(parent_path) is not None or pattern_timestamp is not None or pattern_session_id is not None:
+                #return None
 
             if parent_path in inserted_nodes or parent_path in deleted_nodes :
                 return None
@@ -116,9 +121,10 @@ for test in tests:
 
     deleted_nodes = find_deletes(ops)
     inserted_nodes = set()
+    ignored_tags = ["UUID", "TS", "SessionID"]
     # deleted_nodes = set()
     # Display custom messages
     for op in ops:
-        msg = custom_message(op, inserted_nodes, deleted_nodes)
+        msg = custom_message(op, inserted_nodes, deleted_nodes, ignored_tags)
         if msg:
             print(msg)
