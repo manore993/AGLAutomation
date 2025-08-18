@@ -1,4 +1,6 @@
 import csv
+import json
+
 from lxml import etree
 from xmldiff import main, formatting, actions
 import re
@@ -41,6 +43,63 @@ csv_file_path = "./tests/cahier_de_recette.csv"
 
 tests = read_relevant_test_cases(csv_file_path)
 
+
+def get_type(text):
+    if len(text) > 1 and text[0] == '"':
+        return "string"
+    return "int"
+
+
+# Custom message map
+def custom_message(op, inserted_nodes, deleted_nodes, ignored_tags):
+    if isinstance(op, actions.DeleteNode):
+        parent_path = '/'.join(op.node.split('/')[0:-1])
+
+        if parent_path in deleted_nodes:
+            return None
+
+        return f'Missing "{op.node}" from file2'
+    elif isinstance(op, actions.InsertNode):
+        inserted_nodes.add(op.tag)
+        return f'Unexpected "{op.tag}" in file2'
+    elif isinstance(op, actions.UpdateTextIn):
+        parent_path = op.node.split('/')[-1].split('[')[0]
+        # print(f' parent ath is : ', parent_path)
+        # print(f' node is : ', op.node)
+
+        for tag in ignored_tags:
+            pattern = re.compile(fr'{tag}', re.IGNORECASE)
+            # print(pattern.search(parent_path))
+            if pattern.search(parent_path) is not None:
+                return None
+
+        if parent_path in inserted_nodes or parent_path in deleted_nodes:
+            return None
+        new_value = op.text
+        result_old_values = tree1.xpath(op.node)
+        old_value = result_old_values[0].text if len(result_old_values) > 0 else ""
+        if get_type(new_value) != get_type(old_value):
+            return f'Type mismatched at "{op.node}" : file1 has {get_type(old_value)} and file2 has {get_type(new_value)}'
+        if new_value.strip() == old_value.strip():
+            return None
+        return f'Value changed in "{op.node}" from {old_value} to {new_value}'
+    return None
+
+
+def find_deletes(ops):
+    result = set()
+    for op in ops:
+        if isinstance(op, actions.DeleteNode):
+            current_path = op.node.split('[')[0]
+            result.add(current_path)
+    return result
+
+
+def load_config(path):
+    with open(path, "r", encoding="utf-8") as file:
+        data = json.load(file)
+        return data
+
 for test in tests:
     print("---------------------------------")
     print("Running test case:")
@@ -63,65 +122,12 @@ for test in tests:
 
     # ops.sort(key=lambda x: 0 if isinstance(x, actions.DeleteNode) or isinstance(x, actions.InsertNode) else 1)
 
-    def get_type(text):
-        if len(text) > 1 and text[0] == '"':
-            return "string"
-        return "int"
 
-
-
-    # Custom message map
-    def custom_message(op, inserted_nodes, deleted_nodes, ignored_tags):
-        if isinstance(op, actions.DeleteNode):
-            parent_path = '/'.join(op.node.split('/')[0:-1])
-
-            if parent_path in deleted_nodes:
-                return None
-
-            return f'Missing "{op.node}" from file2'
-        elif isinstance(op, actions.InsertNode):
-            inserted_nodes.add(op.tag)
-            return f'Unexpected "{op.tag}" in file2'
-        elif isinstance(op, actions.UpdateTextIn):
-            parent_path = op.node.split('/')[-1].split('[')[0]
-            #print(f' parent ath is : ', parent_path)
-            #print(f' node is : ', op.node)
-
-            for tag in ignored_tags:
-                pattern = re.compile(fr'{tag}', re.IGNORECASE)
-                #print(pattern.search(parent_path))
-                if pattern.search(parent_path) is not None:
-                    return None
-            #pattern_uuid = re.compile(r'UUID', re.IGNORECASE)
-            #pattern_timestamp = re.compile(r'TS', re.IGNORECASE)
-            #pattern_session_id = re.compile(r'SessionID', re.IGNORECASE)
-
-            #if pattern_uuid.search(parent_path) is not None or pattern_timestamp is not None or pattern_session_id is not None:
-                #return None
-
-            if parent_path in inserted_nodes or parent_path in deleted_nodes :
-                return None
-            new_value = op.text
-            result_old_values = tree1.xpath(op.node)
-            old_value = result_old_values[0].text if len(result_old_values)>0 else ""
-            if get_type(new_value) != get_type(old_value):
-                return f'Type mismatched at "{op.node}" : file1 has {get_type(old_value)} and file2 has {get_type(new_value)}'
-            if new_value.strip() == old_value.strip():
-                return None
-            return f'Value changed in "{op.node}" from {old_value} to {new_value}'
-        return None
-
-    def find_deletes(ops):
-        result = set()
-        for op in ops:
-            if isinstance(op, actions.DeleteNode):
-                current_path = op.node.split('[')[0]
-                result.add(current_path)
-        return result
-
+    config = load_config("config.json")
     deleted_nodes = find_deletes(ops)
     inserted_nodes = set()
-    ignored_tags = ["UUID", "TS", "SessionID"]
+    ignored_tags = config["ignored_tags"]
+    #ignored_tags = ["UUID", "TS", "SessionID"]
     # deleted_nodes = set()
     # Display custom messages
     for op in ops:
