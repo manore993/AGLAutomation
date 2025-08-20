@@ -11,7 +11,15 @@ def get_type(text):
 
 
 # Custom message map
-def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, deleted_nodes, ignored_tags, tree1):
+def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, suspicion_nodes, deleted_nodes, ignored_tags, tree1):
+    if isinstance(op, actions.MoveNode):
+        parent_path = '/'.join(op.node.split('/')[0:-1]).strip()
+        if parent_path in suspicion_nodes:
+            return None
+        #add parent_path in suspicion_nodes first time it captures for the same parent, to ignore next time it appears in the same parent,
+        # because we want to inform only once even if there are more than one change of place of nodes for the same immediate parent.
+        suspicion_nodes.add(parent_path)
+        return(f'Changed order but equivalent for the elements of {parent_path}')
 
     if isinstance(op, actions.DeleteNode):
         parent_path = '/'.join(op.node.split('/')[0:-1])
@@ -55,7 +63,6 @@ def find_deletes(ops):
             result.add(current_path)
     return result
 
-
 def load_config(path):
     with open(path, "r", encoding="utf-8") as file:
         data = json.load(file)
@@ -73,12 +80,13 @@ def run_comparaison(reference_path:str, generated_path:str, config_path:str):
 
     config = load_config(config_path)
     deleted_nodes = find_deletes(ops)
+    suspicion_nodes = set()
     inserted_nodes = set()
     ignored_tags = config["ignored_tags"]
     # ignored_tags = ["UUID", "TS", "SessionID"]
     # deleted_nodes = set()
     # Display custom messages
     for op in ops:
-        msg = custom_message(reference_path, generated_path, op, inserted_nodes, deleted_nodes, ignored_tags, tree1)
+        msg = custom_message(reference_path, generated_path, op, inserted_nodes, deleted_nodes, suspicion_nodes, ignored_tags, tree1)
         if msg:
             print(msg)
