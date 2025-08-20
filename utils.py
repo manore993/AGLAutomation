@@ -11,17 +11,18 @@ def get_type(text):
 
 
 # Custom message map
-def custom_message(op, inserted_nodes, deleted_nodes, ignored_tags, tree1):
+def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, deleted_nodes, ignored_tags, tree1):
+
     if isinstance(op, actions.DeleteNode):
         parent_path = '/'.join(op.node.split('/')[0:-1])
 
         if parent_path in deleted_nodes:
             return None
 
-        return f'Missing "{op.node}" from file2'
+        return f'Missing "{op.node}" from file2 {generated_path}'
     elif isinstance(op, actions.InsertNode):
         inserted_nodes.add(op.tag)
-        return f'Unexpected "{op.tag}" in file2'
+        return f'Unexpected "{op.tag}" in file2 {generated_path}'
     elif isinstance(op, actions.UpdateTextIn):
         parent_path = op.node.split('/')[-1].split('[')[0]
         # print(f' parent ath is : ', parent_path)
@@ -39,10 +40,10 @@ def custom_message(op, inserted_nodes, deleted_nodes, ignored_tags, tree1):
         result_old_values = tree1.xpath(op.node)
         old_value = result_old_values[0].text if len(result_old_values) > 0 else ""
         if get_type(new_value) != get_type(old_value):
-            return f'Type mismatched at "{op.node}" : file1 has {get_type(old_value)} and file2 has {get_type(new_value)}'
+            return f'Type mismatched at "{op.node}" : file1 {reference_path} has {get_type(old_value)} and file2 {generated_path} has {get_type(new_value)}'
         if new_value.strip() == old_value.strip():
             return None
-        return f'Value changed in "{op.node}" from {old_value} to {new_value}'
+        return f'Value changed in "{op.node}" from {old_value} in file1 {reference_path} to {new_value} in file2 {generated_path}'
     return None
 
 
@@ -78,6 +79,6 @@ def run_comparaison(reference_path:str, generated_path:str, config_path:str):
     # deleted_nodes = set()
     # Display custom messages
     for op in ops:
-        msg = custom_message(op, inserted_nodes, deleted_nodes, ignored_tags, tree1)
+        msg = custom_message(reference_path, generated_path, op, inserted_nodes, deleted_nodes, ignored_tags, tree1)
         if msg:
             print(msg)
