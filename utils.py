@@ -33,8 +33,8 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
         return f'Unexpected "{op.tag}" in file2 {generated_path}'
     elif isinstance(op, actions.UpdateTextIn):
         parent_path = op.node.split('/')[-1].split('[')[0]
-        # print(f' parent ath is : ', parent_path)
-        # print(f' node is : ', op.node)
+        print(f' parent ath is : ', parent_path)
+        print(f' node is : ', op.node)
 
         for tag in ignored_tags:
             pattern = re.compile(fr'{tag}', re.IGNORECASE)
@@ -60,15 +60,13 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
         for value in ignored_values:
             #print(f'Value_path in ignored_values {value["path"]} value_pattern in ignored_values {value["patterns"]}')
             if path_to_test_for_ignore_values == value["path"]:
-                #value_to_be_same = new_value.split('[')[0]
-                value_to_be_ignored = "[" + new_value.split('[')[1]
-                if value_to_be_ignored.strip() == value["patterns"].strip():
-                    return f"{value_to_be_ignored} in ignored_values in config - Test passed"
+                value_to_be_same = new_value.split('[')[0]
+                #value_to_be_ignored = "[" + new_value.split('[')[1]
+                new_value_clean = new_value.replace(value["patterns"].strip(), "")
+                if old_value.strip() == new_value_clean.strip():
+                    return f"Test passed"
                 #print(f'Value to be same {value_to_be_same} value to be ignored {value_to_be_ignored}')
 
-        ignored_parts_for_this_path = [] # TODO Find from config
-        #if removed_ignored_part(new_value.strip(), ignored_parts_for_this_path).strip() == old_value.strip():
-        #    return None
         return f'Value changed in "{op.node}" from {old_value} in file1 {reference_path} to {new_value} in file2 {generated_path}'
     return None
 

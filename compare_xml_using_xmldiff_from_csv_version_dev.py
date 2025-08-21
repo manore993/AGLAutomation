@@ -49,8 +49,7 @@ for test in tests:
     print("Running test case:")
     print(test["label"])
 
-    if (test["label"] == "9a- Existence + valeur unique" or  test["label"] == "9c- Valeur + exclusion de champ"
-            or  test["label"] == "10b – Exclusion de tag commentaire variable"):
+    if (test["label"] == "9a- Existence + valeur unique" or  test["label"] == "9c- Valeur + exclusion de champ"):
         continue
 
     #file1 = f"reference-{test["id"]}.xml"

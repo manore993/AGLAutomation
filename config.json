@@ -16,6 +16,10 @@
     {
       "path": "/Document/Notes",
       "patterns": "[QA‑123]"
+    },
+    {
+      "path": "/Document/Notes",
+      "patterns": "[QA TIR 20250717]"
     }
   ]
 }
