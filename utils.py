@@ -27,7 +27,7 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
         if parent_path in deleted_nodes:
             return None
 
-        return f'Missing "{op.node}" from file2 {generated_path}'
+        return f'Missing {op.node} from file2 {generated_path}'
     elif isinstance(op, actions.InsertNode):
         inserted_nodes.add(op.tag)
         return f'Unexpected "{op.tag}" in file2 {generated_path}'
@@ -38,9 +38,10 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
 
         for tag in ignored_tags:
             pattern = re.compile(fr'{tag}', re.IGNORECASE)
-            # print(pattern.search(parent_path))
+            #print(pattern.search(parent_path))
             if pattern.search(parent_path) is not None:
-                return None
+                #print(pattern.search(parent_path).group())
+                return f"{pattern.search(parent_path).group()} ignored - Test passed"
 
         if parent_path in inserted_nodes or parent_path in deleted_nodes:
             return None
@@ -50,7 +51,7 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
         if get_type(new_value) != get_type(old_value):
             return f'Type mismatched at "{op.node}" : file1 {reference_path} has {get_type(old_value)} and file2 {generated_path} has {get_type(new_value)}'
         if new_value.strip() == old_value.strip():
-            return None
+            return "Same value - Test passed"
 
         path_to_test_for_ignore_values = op.node.split('[')[0]
         #print(f'path to test for ignored values {path_to_test_for_ignore_values}')
@@ -62,7 +63,7 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
                 #value_to_be_same = new_value.split('[')[0]
                 value_to_be_ignored = "[" + new_value.split('[')[1]
                 if value_to_be_ignored.strip() == value["patterns"].strip():
-                    print("None")
+                    return f"{value_to_be_ignored} in ignored_values in config - Test passed"
                 #print(f'Value to be same {value_to_be_same} value to be ignored {value_to_be_ignored}')
 
         ignored_parts_for_this_path = [] # TODO Find from config
