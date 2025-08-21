@@ -3,5 +3,19 @@
     "UUID",
     "TS",
     "SessionID"
+  ],
+  "ignored_values": [
+    {
+      "path": "B[*]>C",
+      "patterns": "[QA-123]"
+    },
+    {
+      "path": "/Document/Notes",
+      "patterns": "[BATCH 123]"
+    },
+    {
+      "path": "/Document/Notes",
+      "patterns": "[QA‑123]"
+    }
   ]
 }

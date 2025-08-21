@@ -11,7 +11,7 @@ def get_type(text):
 
 
 # Custom message map
-def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, suspicion_nodes, deleted_nodes, ignored_tags, tree1):
+def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, suspicion_nodes, deleted_nodes, ignored_tags, ignored_values, tree1):
     if isinstance(op, actions.MoveNode):
         parent_path = '/'.join(op.node.split('/')[0:-1]).strip()
         if parent_path in suspicion_nodes:
@@ -51,6 +51,23 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
             return f'Type mismatched at "{op.node}" : file1 {reference_path} has {get_type(old_value)} and file2 {generated_path} has {get_type(new_value)}'
         if new_value.strip() == old_value.strip():
             return None
+
+        path_to_test_for_ignore_values = op.node.split('[')[0]
+        #print(f'path to test for ignored values {path_to_test_for_ignore_values}')
+        #print(f'old_value {old_value} new_value {new_value}')
+
+        for value in ignored_values:
+            #print(f'Value_path in ignored_values {value["path"]} value_pattern in ignored_values {value["patterns"]}')
+            if path_to_test_for_ignore_values == value["path"]:
+                #value_to_be_same = new_value.split('[')[0]
+                value_to_be_ignored = "[" + new_value.split('[')[1]
+                if value_to_be_ignored.strip() == value["patterns"].strip():
+                    print("None")
+                #print(f'Value to be same {value_to_be_same} value to be ignored {value_to_be_ignored}')
+
+        ignored_parts_for_this_path = [] # TODO Find from config
+        #if removed_ignored_part(new_value.strip(), ignored_parts_for_this_path).strip() == old_value.strip():
+        #    return None
         return f'Value changed in "{op.node}" from {old_value} in file1 {reference_path} to {new_value} in file2 {generated_path}'
     return None
 
@@ -83,10 +100,11 @@ def run_comparaison(reference_path:str, generated_path:str, config_path:str):
     suspicion_nodes = set()
     inserted_nodes = set()
     ignored_tags = config["ignored_tags"]
+    ignored_values = config["ignored_values"]
     # ignored_tags = ["UUID", "TS", "SessionID"]
     # deleted_nodes = set()
     # Display custom messages
     for op in ops:
-        msg = custom_message(reference_path, generated_path, op, inserted_nodes, deleted_nodes, suspicion_nodes, ignored_tags, tree1)
+        msg = custom_message(reference_path, generated_path, op, inserted_nodes, deleted_nodes, suspicion_nodes, ignored_tags, ignored_values, tree1)
         if msg:
             print(msg)
