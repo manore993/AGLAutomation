@@ -2,7 +2,8 @@
   "ignored_tags": [
     "UUID",
     "TS",
-    "SessionID"
+    "SessionID",
+    "Timestamp"
   ],
   "ignored_values": [
     {

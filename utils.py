@@ -28,14 +28,24 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
             return None
 
         return f'Missing {op.node} from file2 {generated_path}'
+
     elif isinstance(op, actions.InsertNode):
+        #print("-------------")
+        parent_tag = (op.target.split('/')[-1]).split('[')[0]
+        #print(f'parent_tag: {parent_tag}')
+        #print(f'inserted_nodes: {inserted_nodes}')
+        if parent_tag in inserted_nodes:
+             return None
         inserted_nodes.add(op.tag)
+        #print(f'op.target {op.target}')
+        #print(f'inserted_nodes: {inserted_nodes}')
+        #print("-------------")
         return f'Unexpected "{op.tag}" in file2 {generated_path}'
+
     elif isinstance(op, actions.UpdateTextIn):
         parent_path = op.node.split('/')[-1].split('[')[0]
-        print(f' parent ath is : ', parent_path)
-        print(f' node is : ', op.node)
-
+        #print(f' parent path is : ', parent_path)
+        #print(f' node is : ', op.node)
         for tag in ignored_tags:
             pattern = re.compile(fr'{tag}', re.IGNORECASE)
             #print(pattern.search(parent_path))
@@ -43,7 +53,8 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
                 #print(pattern.search(parent_path).group())
                 return f"{pattern.search(parent_path).group()} ignored - Test passed"
 
-        if parent_path in inserted_nodes or parent_path in deleted_nodes:
+        #op.node.split('/')[-2] in inserted_nodes (to check also that the child of missing parent is not checked for missing value)
+        if parent_path in inserted_nodes or op.node.split('/')[-2] in inserted_nodes or parent_path in deleted_nodes:
             return None
         new_value = op.text
         result_old_values = tree1.xpath(op.node)
@@ -69,6 +80,7 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
 
         return f'Value changed in "{op.node}" from {old_value} in file1 {reference_path} to {new_value} in file2 {generated_path}'
     return None
+
 
 
 def find_deletes(ops):
