@@ -1,0 +1,135 @@
+ 1 <?xml version="1.0" encoding="UTF-8"?>
+ 2 <LIBRARY>
+ 3   <GENRE UUID="1a2b3c4d-5e6f-7g8h-9i10-j11k12l13m14">
+ 4     <NAME>Roman Classique</NAME>
+ 5     <DESCRIPTION>Œuvres littéraires françaises du XIXe siècle</DESCRIPTION>
+ 6     <BOOK UUID="a1b2c3d4-e5f6-7g8h-9i10-j11k12l13m14">
+ 7       <TITLE>Les Misérables</TITLE>
+ 8       <SUMMARY>Un roman épique sur la justice et la rédemption.</SUMMARY>
+ 9       <FIRST_EDITION_DATE>1862-01-01</FIRST_EDITION_DATE>
+10       <GENRE_NAME>Roman Classique</GENRE_NAME>
+11       <AUTHOR>
+12         <LAST_NAME>HUGO</LAST_NAME>
+13         <FIRST_NAME>Victor</FIRST_NAME>
+14         <BIRTH_DATE>1802-02-26</BIRTH_DATE>
+15         <BIRTH_CITY>Besançon</BIRTH_CITY>
+16       </AUTHOR>
+17       <EDITIONS>
+18         <EDITION>
+19           <LANGUAGE>Français</LANGUAGE>
+20           <ISBN>9782070409180</ISBN>
+21           <YEAR>1862</YEAR>
+22           <TYPE>Broché</TYPE>
+23           <PUBLISHER>Gallimard</PUBLISHER>
+24         </EDITION>
+25         <EDITION>
+26           <LANGUAGE>Français</LANGUAGE>
+27           <ISBN>9782253004220</ISBN>
+28           <YEAR>1985</YEAR>
+29           <TYPE>Poche</TYPE>
+30           <PUBLISHER>Le Livre de Poche</PUBLISHER>
+31         </EDITION>
+32       </EDITIONS>
+33     </BOOK>
+34     <!-- Autres livres du genre Roman Classique -->
+35   </GENRE>
+36   <GENRE UUID="2b3c4d5e-6f7g-8h9i-10j11-k12l13m14n15">
+37     <NAME>Science-Fiction</NAME>
+38     <DESCRIPTION>Romans d'anticipation et d'imaginaire scientifique</DESCRIPTION>
+39     <BOOK UUID="b2c3d4e5-f6g7-8h9i-10j11-k12l13m14n15">
+40       <TITLE>La Nuit des temps</TITLE>
+41       <SUMMARY>Une civilisation enfouie sous les glaces de l'Antarctique.</SUMMARY>
+42       <FIRST_EDITION_DATE>1968-01-01</FIRST_EDITION_DATE>
+43       <GENRE_NAME>Science-Fiction</GENRE_NAME>
+44       <AUTHOR>
+45         <LAST_NAME>BARJAVEL</LAST_NAME>
+46         <FIRST_NAME>René</FIRST_NAME>
+47         <BIRTH_DATE>1911-01-24</BIRTH_DATE>
+48         <BIRTH_CITY>Nyons</BIRTH_CITY>
+49       </AUTHOR>
+50       <EDITIONS>
+51         <EDITION>
+52           <LANGUAGE>Français</LANGUAGE>
+53           <ISBN>9782253006323</ISBN>
+54           <YEAR>1968</YEAR>
+55           <TYPE>Broché</TYPE>
+56           <PUBLISHER>Denoël</PUBLISHER>
+57         </EDITION>
+58         <EDITION>
+59           <LANGUAGE>Français</LANGUAGE>
+60           <ISBN>9782253006324</ISBN>
+61           <YEAR>1990</YEAR>
+62           <TYPE>Poche</TYPE>
+63           <PUBLISHER>Le Livre de Poche</PUBLISHER>
+64         </EDITION>
+65       </EDITIONS>
+66     </BOOK>
+67     <!-- Autres livres du genre Science-Fiction -->
+68   </GENRE>
+69   <GENRE UUID="3c4d5e6f-7g8h-9i10-j11k-12l13m14n15o">
+70     <NAME>Policier</NAME>
+71     <DESCRIPTION>Romans d'enquête et de suspense</DESCRIPTION>
+72     <BOOK UUID="c3d4e5f6-g7h8-9i10-j11k-12l13m14n15o">
+73       <TITLE>Maigret et le corps sans tête</TITLE>
+74       <SUMMARY>Une enquête du commissaire Maigret sur un meurtre mystérieux.</SUMMARY>
+75       <FIRST_EDITION_DATE>1955-01-01</FIRST_EDITION_DATE>
+76       <GENRE_NAME>Policier</GENRE_NAME>
+77       <AUTHOR>
+78         <LAST_NAME>SIMENON</LAST_NAME>
+79         <FIRST_NAME>Georges</FIRST_NAME>
+80         <BIRTH_DATE>1903-02-13</BIRTH_DATE>
+81         <BIRTH_CITY>Liège</BIRTH_CITY>
+82       </AUTHOR>
+83       <EDITIONS>
+84         <EDITION>
+85           <LANGUAGE>Français</LANGUAGE>
+86           <ISBN>9782253142502</ISBN>
+87           <YEAR>1955</YEAR>
+88           <TYPE>Broché</TYPE>
+89           <PUBLISHER>Presses de la Cité</PUBLISHER>
+90         </EDITION>
+91         <EDITION>
+92           <LANGUAGE>Français</LANGUAGE>
+93           <ISBN>9782253142519</ISBN>
+94           <YEAR>1995</YEAR>
+95           <TYPE>Poche</TYPE>
+96           <PUBLISHER>Le Livre de Poche</PUBLISHER>
+97         </EDITION>
+98       </EDITIONS>
+99     </BOOK>
+100    <!-- Autres livres du genre Policier -->
+101  </GENRE>
+102  <GENRE UUID="4d5e6f7g-8h9i-10j11-k12l-13m14n15o16p">
+103    <NAME>Philosophie</NAME>
+104    <DESCRIPTION>Essais et traités philosophiques français</DESCRIPTION>
+105    <BOOK UUID="d4e5f6g7-h8i9-10j11-k12l-13m14n15o16p">
+106      <TITLE>Le Deuxième Sexe</TITLE>
+107      <SUMMARY>Une analyse de la condition féminine et de l'oppression des femmes.</SUMMARY>
+108      <FIRST_EDITION_DATE>1949-01-01</FIRST_EDITION_DATE>
+109      <GENRE_NAME>Philosophie</GENRE_NAME>
+110      <AUTHOR>
+111        <LAST_NAME>DE BEAUVOIR</LAST_NAME>
+112        <FIRST_NAME>Simone</FIRST_NAME>
+113        <BIRTH_DATE>1908-01-09</BIRTH_DATE>
+114        <BIRTH_CITY>Paris</BIRTH_CITY>
+115      </AUTHOR>
+116      <EDITIONS>
+117        <EDITION>
+118          <LANGUAGE>Français</LANGUAGE>
+119          <ISBN>9782070324070</ISBN>
+120          <YEAR>1949</YEAR>
+121          <TYPE>Broché</TYPE>
+122          <PUBLISHER>Gallimard</PUBLISHER>
+123        </EDITION>
+124        <EDITION>
+125          <LANGUAGE>Français</LANGUAGE>
+126          <ISBN>9782070324087</ISBN>
+127          <YEAR>1980</YEAR>
+128          <TYPE>Poche</TYPE>
+129          <PUBLISHER>Folio</PUBLISHER>
+130        </EDITION>
+131      </EDITIONS>
+132    </BOOK>
+133    <!-- Autres livres du genre Philosophie -->
+134  </GENRE>
+135</LIBRARY>
