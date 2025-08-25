@@ -60,7 +60,9 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
         #add parent_path in suspicion_nodes first time it captures for the same parent, to ignore next time it appears in the same parent,
         # because we want to inform only once even if there are more than one change of place of nodes for the same immediate parent.
         suspicion_nodes.add(parent_path)
-        return(f'Changed order but equivalent for the elements of {parent_path}')
+        #return(f'Changed order but equivalent for the elements of {parent_path}')
+        return ("Suspected",
+                f'Changed order but equivalent for the elements of {parent_path}')
 
 
     if isinstance(op, actions.DeleteNode):
@@ -69,7 +71,9 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
         if parent_path in deleted_nodes:
             return None
 
-        return (f'Missing {op.node} from file2 {generated_path}')
+        #return (f'Missing {op.node} from file2 {generated_path}')
+        return ("Deleted",
+                f'Missing {op.node} from file2 {generated_path}')
 
 
     elif isinstance(op, actions.InsertNode):
@@ -83,7 +87,9 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
         #print(f'op.target {op.target}')
         #print(f'inserted_nodes: {inserted_nodes}')
         #print("-------------")
-        return f'Unexpected "{op.tag}" in file2 {generated_path}'
+        #return f'Unexpected "{op.tag}" in file2 {generated_path}'
+        return ("Added",
+                f'Unexpected "{op.tag}" in file2 {generated_path}')
 
 
 
@@ -96,7 +102,9 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
             #print(pattern.search(parent_path))
             if pattern.search(parent_path) is not None:
                 #print(pattern.search(parent_path).group())
-                return f"{pattern.search(parent_path).group()} ignored - Test passed"
+                #return f"{pattern.search(parent_path).group()} ignored - Test passed"
+                return ("Ignore Pattern",
+                        f"{pattern.search(parent_path).group()} ignored - Test passed")
 
 
         #op.node.split('/')[-2] in inserted_nodes (to check also that the child of missing parent is not checked for missing value)
@@ -106,10 +114,14 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
         result_old_values = tree1.xpath(op.node)
         old_value = result_old_values[0].text if len(result_old_values) > 0 else ""
         if get_type(new_value) != get_type(old_value):
-            return f'Type mismatched at "{op.node}" : file1 {reference_path} has {get_type(old_value)} and file2 {generated_path} has {get_type(new_value)}'
+            #return f'Type mismatched at "{op.node}" : file1 {reference_path} has {get_type(old_value)} and file2 {generated_path} has {get_type(new_value)}'
+            return ("TypeMismatch",
+                    f'Type mismatched at "{op.node}" : file1 {reference_path} has {get_type(old_value)} and file2 {generated_path} has {get_type(new_value)}')
 
         if new_value.strip() == old_value.strip():
-            return "Same value - Test passed"
+            #return "Same value - Test passed"
+            return ("Same value",
+                    f'Test passed')
 
         path_to_test_for_ignore_values = op.node.split('[')[0]
         #print(f'path to test for ignored values {path_to_test_for_ignore_values}')
@@ -122,11 +134,15 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
                 #value_to_be_ignored = "[" + new_value.split('[')[1]
                 new_value_clean = new_value.replace(value["patterns"].strip(), "")
                 if old_value.strip() == new_value_clean.strip():
-                    return f"Test passed"
+                    #return f"Test passed"
+                    return ("Test Green",
+                            "Test passed")
 
                 #print(f'Value to be same {value_to_be_same} value to be ignored {value_to_be_ignored}')
 
-        return f'Value changed in "{op.node}" from {old_value} in file1 {reference_path} to {new_value} in file2 {generated_path}'
+        #return f'Value changed in "{op.node}" from {old_value} in file1 {reference_path} to {new_value} in file2 {generated_path}'
+        return ("Different",
+                f'Value changed in "{op.node}" from {old_value} in file1 {reference_path} to {new_value} in file2 {generated_path}')
 
     return None
 
@@ -140,7 +156,7 @@ def get_csv_file_name():
         csv_file_name = f"TNR_{now.strftime('%Y%m%d')}_{now.strftime('%H%M%S')}.csv"
     return csv_file_name
 
-def write_comparison_result(reference_file: str, generated_file: str, detailed_message: str):
+def write_comparison_result(reference_file: str, generated_file: str, comparison_result: tuple):
     """
     Writes comparison results to a CSV file without overwriting previous data.
 
@@ -151,6 +167,9 @@ def write_comparison_result(reference_file: str, generated_file: str, detailed_m
     output_message (str): Comparison Output Message
     detailed_message (str): Comparison Output Details Message
     """
+
+    comparison_type, comparison_message = comparison_result
+
     file_name = get_csv_file_name()
     file_exists = os.path.isfile(file_name)
 
@@ -165,11 +184,12 @@ def write_comparison_result(reference_file: str, generated_file: str, detailed_m
             writer.writerow([
             "Reference Message File Name",
             "Generated message File Name",
+            "Comparaison Output Message (Type)",
             "Comparaison Output detailes message"
             ])
 
 
         # Write the data
-        writer.writerow([reference_file, generated_file, detailed_message])
+        writer.writerow([reference_file, generated_file,comparison_type, comparison_message])
 
 
