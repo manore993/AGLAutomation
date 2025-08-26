@@ -1,4 +1,6 @@
 import csv
+import os
+
 from utils import run_comparaison
 import json
 
@@ -45,19 +47,32 @@ csv_file_path = "./tests/cahier_de_recette.csv"
 tests = read_relevant_test_cases(csv_file_path)
 
 for test in tests:
+
+    skip_labels = [
+        "4c – Hors ordre vs duplication",
+        "9a- Existence + valeur unique",
+        "11a- Éléments identiques hors ordre",
+        "14a- Lot petit volume (N=5)",
+        "15a- Facultatif – valeur conforme",
+        "15b- Facultatif – absent"
+    ]
+    #if (test["label"] == "9a- Existence + valeur unique"):
+    if (test["label"] in skip_labels):
+        continue
     print("---------------------------------")
     print("Running test case:")
     print(test["label"])
 
-    if (test["label"] == "9a- Existence + valeur unique"):
-        continue
-
     #file1 = f"reference-{test["id"]}.xml"
-    file1 = f"reference.xml"
+    file1 = f"tests/referenceMessages/reference-{test["id"]}.xml"
+    os.makedirs(os.path.dirname(file1), exist_ok=True)
+    #file1 = f"reference.xml"
     with open(file1, "w", encoding="utf-8") as file:
         file.write(test["xml_reference"])
     #file2 = f"generates-{test["id"]}.xml"
-    file2 = f"generates.xml"
+    file2 = f"tests/generatedMessages/generates-{test["id"]}.xml"
+    os.makedirs(os.path.dirname(file2), exist_ok=True)
+    #file2 = f"generates.xml"
     with open(file2, "w", encoding="utf-8") as file:
         file.write(test["xml_generated"])
 

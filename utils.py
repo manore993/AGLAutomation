@@ -42,14 +42,24 @@ def run_comparaison(reference_path:str, generated_path:str, config_path:str):
     inserted_nodes = set()
     ignored_tags = config["ignored_tags"]
     ignored_values = config["ignored_values"]
+
+    type_counts = {}
+    details = []
     # ignored_tags = ["UUID", "TS", "SessionID"]
     # deleted_nodes = set()
     # Display custom messages
     for op in ops:
-        msg = custom_message(reference_path, generated_path, op, inserted_nodes, deleted_nodes, suspicion_nodes, ignored_tags, ignored_values, tree1)
+        msg = custom_message(reference_path, generated_path, op, inserted_nodes, suspicion_nodes,deleted_nodes, ignored_tags, ignored_values, tree1)
         if msg:
-            write_comparison_result(reference_path, generated_path, msg)
+            result_type, detail = msg
+            type_counts[result_type] = type_counts.get(result_type, 0) + 1
+            details.append(f'{result_type} {detail}')
+            #write_comparison_result(reference_path, generated_path, msg)
+            #write_comparison_result(reference_path, generated_path, type_counts, details, delimiter)
+            #print(f'Type_count: {type_counts}')
             print(msg)
+    #print(f'Type_count: {type_counts}')
+    write_comparison_result(reference_path, generated_path, type_counts, details, delimiter = ";")
 
 # Custom message map
 def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, suspicion_nodes, deleted_nodes, ignored_tags, ignored_values, tree1):
@@ -115,13 +125,14 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
         old_value = result_old_values[0].text if len(result_old_values) > 0 else ""
         if get_type(new_value) != get_type(old_value):
             #return f'Type mismatched at "{op.node}" : file1 {reference_path} has {get_type(old_value)} and file2 {generated_path} has {get_type(new_value)}'
-            return ("TypeMismatch",
+            return ("Type Mismatch",
                     f'Type mismatched at "{op.node}" : file1 {reference_path} has {get_type(old_value)} and file2 {generated_path} has {get_type(new_value)}')
 
         if new_value.strip() == old_value.strip():
             #return "Same value - Test passed"
-            return ("Same value",
-                    f'Test passed')
+            #return ("Same value",
+                    #f'Test passed')
+            return None
 
         path_to_test_for_ignore_values = op.node.split('[')[0]
         #print(f'path to test for ignored values {path_to_test_for_ignore_values}')
@@ -135,8 +146,9 @@ def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, s
                 new_value_clean = new_value.replace(value["patterns"].strip(), "")
                 if old_value.strip() == new_value_clean.strip():
                     #return f"Test passed"
-                    return ("Test Green",
-                            "Test passed")
+                    #return ("Test Green",
+                            #"Test passed")
+                    return None
 
                 #print(f'Value to be same {value_to_be_same} value to be ignored {value_to_be_ignored}')
 
@@ -156,7 +168,8 @@ def get_csv_file_name():
         csv_file_name = f"TNR_{now.strftime('%Y%m%d')}_{now.strftime('%H%M%S')}.csv"
     return csv_file_name
 
-def write_comparison_result(reference_file: str, generated_file: str, comparison_result: tuple):
+#def write_comparison_result(reference_file: str, generated_file: str, comparison_result: tuple):
+def write_comparison_result(reference_file: str, generated_file: str, type_counts: dict, details: list, delimiter: str = ";"):
     """
     Writes comparison results to a CSV file without overwriting previous data.
 
@@ -168,7 +181,8 @@ def write_comparison_result(reference_file: str, generated_file: str, comparison
     detailed_message (str): Comparison Output Details Message
     """
 
-    comparison_type, comparison_message = comparison_result
+    #comparison_type, comparison_message = comparison_result
+    detail_messages = delimiter.join(details)
 
     file_name = get_csv_file_name()
     file_exists = os.path.isfile(file_name)
@@ -180,16 +194,40 @@ def write_comparison_result(reference_file: str, generated_file: str, comparison
 
 
         # Write header if the file is new
+        # if not file_exists:
+        #     writer.writerow([
+        #     "Reference Message File Name",
+        #     "Generated message File Name",
+        #     "Comparaison Output Message (Type)",
+        #     "Comparaison Output detailes message"
+        #     ])
         if not file_exists:
             writer.writerow([
-            "Reference Message File Name",
-            "Generated message File Name",
-            "Comparaison Output Message (Type)",
-            "Comparaison Output detailes message"
+                "Reference File",
+                "Generated File",
+                "Nb Added",
+                "Nb Deleted",
+                "Nb Suspected",
+                "Nb Ignore Pattern",
+                "Nb Type Mismatch",
+                "Nb Different",
+                "Details"
             ])
 
+        #print(f'Type count in write_comparaison_result: {type_counts}')
 
         # Write the data
-        writer.writerow([reference_file, generated_file,comparison_type, comparison_message])
+        #writer.writerow([reference_file, generated_file,comparison_type, comparison_message])
+        writer.writerow([
+            reference_file,
+            generated_file,
+            type_counts.get("Added", 0),
+            type_counts.get("Deleted", 0),
+            type_counts.get("Suspected", 0),
+            type_counts.get("Ignore Pattern", 0),
+            type_counts.get("Type Mismatch", 0),
+            type_counts.get("Different", 0),
+            detail_messages
+        ])
 
 

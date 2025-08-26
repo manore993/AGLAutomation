@@ -3,8 +3,8 @@ import os
 from utils import run_comparaison
 
 # folders
-generated_folder = "generatedMessages"
-reference_folder = "referenceMessages"
+generated_folder = "tests/generatedMessages"
+reference_folder = "tests/referenceMessages"
 
 # get sorted file lists so matching is consistent
 generated_files = sorted(os.listdir(generated_folder))
