@@ -57,7 +57,7 @@ def run_comparaison(reference_path:str, generated_path:str, config_path:str):
             #write_comparison_result(reference_path, generated_path, msg)
             #write_comparison_result(reference_path, generated_path, type_counts, details, delimiter)
             #print(f'Type_count: {type_counts}')
-            print(msg)
+            #print(msg)
     #print(f'Type_count: {type_counts}')
     write_comparison_result(reference_path, generated_path, type_counts, details, delimiter = ";")
 
@@ -215,6 +215,12 @@ def write_comparison_result(reference_file: str, generated_file: str, type_count
             ])
 
         #print(f'Type count in write_comparaison_result: {type_counts}')
+        print_console = [
+            reference_file,
+            generated_file,
+            type_counts
+        ]
+        print(print_console)
 
         # Write the data
         #writer.writerow([reference_file, generated_file,comparison_type, comparison_message])
