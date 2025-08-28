@@ -68,12 +68,12 @@ if __name__ == '__main__':
 
 
     print(f'Nombre de fichiers traités : {file_count}')
-    print(f'Statistiques de la campagne : {file_count}')
-    print(f'\t{total_difference} différences détectées dans {number_of_files_with_difference}')
+    print(f'Statistiques de la campagne :')
+    print(f'\t{total_difference} différences détectées dans {number_of_files_with_difference} fichiers ')
     print(f'\t\tAdded: {total_count.get("Added", 0)}')
     print(f'\t\tDeleted: {total_count.get("Deleted", 0)}')
     print(f'\t\tType Mismatch: {total_count.get("Type Mismatch", 0)}')
     print(f'\t\tDifferent: {total_count.get("Different", 0)}')
-    print(f'\t{total_count.get("Suspected", 0)} équivalences suspectées dans {number_of_files_with_suspicion}')
+    print(f'\t{total_count.get("Suspected", 0)} équivalences suspectées dans {number_of_files_with_suspicion} fichiers ')
     print(f"Durée d'exécution: {total_execution_time} (secondes)")
     print(f"Fin de la comparaison : {date_time_end_of_campagne}")
