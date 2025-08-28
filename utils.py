@@ -60,6 +60,7 @@ def run_comparaison(reference_path:str, generated_path:str, config_path:str):
             #print(msg)
     #print(f'Type_count: {type_counts}')
     write_comparison_result(reference_path, generated_path, type_counts, details, config, delimiter = ";")
+    return type_counts
 
 # Custom message map
 def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, suspicion_nodes, deleted_nodes, ignored_tags, ignored_values, tree1):
@@ -221,7 +222,7 @@ def write_comparison_result(reference_file: str, generated_file: str, type_count
             type_counts,
             config
         ]
-        print(print_console)
+        #print(print_console)
 
         # Write the data
         #writer.writerow([reference_file, generated_file,comparison_type, comparison_message])
