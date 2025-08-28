@@ -59,7 +59,7 @@ def run_comparaison(reference_path:str, generated_path:str, config_path:str):
             #print(f'Type_count: {type_counts}')
             #print(msg)
     #print(f'Type_count: {type_counts}')
-    write_comparison_result(reference_path, generated_path, type_counts, details, delimiter = ";")
+    write_comparison_result(reference_path, generated_path, type_counts, details, config, delimiter = ";")
 
 # Custom message map
 def custom_message(reference_path:str, generated_path:str, op, inserted_nodes, suspicion_nodes, deleted_nodes, ignored_tags, ignored_values, tree1):
@@ -169,7 +169,7 @@ def get_csv_file_name():
     return csv_file_name
 
 #def write_comparison_result(reference_file: str, generated_file: str, comparison_result: tuple):
-def write_comparison_result(reference_file: str, generated_file: str, type_counts: dict, details: list, delimiter: str = ";"):
+def write_comparison_result(reference_file: str, generated_file: str, type_counts: dict, details: list, config: dict, delimiter: str = ";"):
     """
     Writes comparison results to a CSV file without overwriting previous data.
 
@@ -201,39 +201,40 @@ def write_comparison_result(reference_file: str, generated_file: str, type_count
         #     "Comparaison Output Message (Type)",
         #     "Comparaison Output detailes message"
         #     ])
-        if not file_exists:
-            writer.writerow([
-                "Reference File",
-                "Generated File",
-                "Nb Added",
-                "Nb Deleted",
-                "Nb Suspected",
-                "Nb Ignore Pattern",
-                "Nb Type Mismatch",
-                "Nb Different",
-                "Details"
-            ])
+        # if not file_exists:
+        #     writer.writerow([
+        #         "Reference File",
+        #         "Generated File",
+        #         "Nb Added",
+        #         "Nb Deleted",
+        #         "Nb Suspected",
+        #         "Nb Ignore Pattern",
+        #         "Nb Type Mismatch",
+        #         "Nb Different",
+        #         "Details"
+        #     ])
 
         #print(f'Type count in write_comparaison_result: {type_counts}')
         print_console = [
             reference_file,
             generated_file,
-            type_counts
+            type_counts,
+            config
         ]
         print(print_console)
 
         # Write the data
         #writer.writerow([reference_file, generated_file,comparison_type, comparison_message])
-        writer.writerow([
-            reference_file,
-            generated_file,
-            type_counts.get("Added", 0),
-            type_counts.get("Deleted", 0),
-            type_counts.get("Suspected", 0),
-            type_counts.get("Ignore Pattern", 0),
-            type_counts.get("Type Mismatch", 0),
-            type_counts.get("Different", 0),
-            detail_messages
-        ])
+        # writer.writerow([
+        #     reference_file,
+        #     generated_file,
+        #     type_counts.get("Added", 0),
+        #     type_counts.get("Deleted", 0),
+        #     type_counts.get("Suspected", 0),
+        #     type_counts.get("Ignore Pattern", 0),
+        #     type_counts.get("Type Mismatch", 0),
+        #     type_counts.get("Different", 0),
+        #     detail_messages
+        # ])
 
 
